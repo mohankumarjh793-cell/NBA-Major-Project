@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+```
+<title>NBA Analytics | ML Prediction</title>
+
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}">
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f4f7fb;
+        color: #172033;
+    }
+
+    /* ================= NAVBAR ================= */
+
+    .navbar {
+        background: #111827;
+        padding: 14px 5%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        box-shadow: 0 3px 15px rgba(0, 0, 0, 0.12);
+    }
+
+    .logo {
+        color: white;
+        text-decoration: none;
+        font-size: 22px;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .nav-links a {
+        color: #dbe4f0;
+        text-decoration: none;
+        padding: 9px 12px;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: 0.2s ease;
+    }
+
+    .nav-links a:hover {
+        background: #2563eb;
+        color: white;
+    }
+
+    .nav-links .active {
+        background: #2563eb;
+        color: white;
+    }
+
+    /* ================= CONTAINER ================= */
+
+    .container {
+        width: 90%;
+        max-width: 1180px;
+        margin: auto;
+    }
+
+    /* ================= PAGE HEADER ================= */
+
+    .page-header {
+        text-align: center;
+        padding: 45px 0 30px;
+    }
+
+    .page-header .badge {
+        display: inline-block;
+        background: #dbeafe;
+        color: #1d4ed8;
+        padding: 7px 14px;
+        border-radius: 30px;
+        font-size: 13px;
+        font-weight: bold;
+        margin-bottom: 14px;
+    }
+
+    .page-header h1 {
+        margin: 0 0 12px;
+        font-size: 36px;
+        line-height: 1.2;
+    }
+
+    .page-header p {
+        color: #64748b;
+        margin: 0 auto;
+        max-width: 700px;
+        line-height: 1.6;
+    }
+
+    /* ================= ERROR ================= */
+
+    .error {
+        background: #fef2f2;
+        color: #b91c1c;
+        border: 1px solid #fecaca;
+        border-left: 5px solid #dc2626;
+        padding: 16px 18px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+    }
+
+    /* ================= PREDICTION FORM ================= */
+
+    .prediction-box {
+        background: white;
+        padding: 32px;
+        border-radius: 18px;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 8px 30px rgba(15, 23, 42, 0.07);
+        margin-bottom: 30px;
+    }
+
+    .section-heading {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 8px;
+    }
+
+    .section-icon {
+        width: 42px;
+        height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #eff6ff;
+        border-radius: 11px;
+        font-size: 21px;
+    }
+
+    .prediction-box h2 {
+        margin: 0;
+        font-size: 23px;
+    }
+
+    .prediction-box > p {
+        color: #64748b;
+        line-height: 1.6;
+        margin: 0 0 25px 54px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: 700;
+        margin-bottom: 9px;
+        color: #334155;
+    }
+
+    select {
+        width: 100%;
+        padding: 14px 15px;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+        background: white;
+        font-size: 15px;
+        color: #172033;
+        outline: none;
+        transition: 0.2s ease;
+    }
+
+    select:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    .predict-btn {
+        width: 100%;
+        padding: 15px;
+        border: none;
+        border-radius: 10px;
+        background: #2563eb;
+        color: white;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.2s ease;
+    }
+
+    .predict-btn:hover {
+        background: #1d4ed8;
+        transform: translateY(-1px);
+    }
+
+    /* ================= RESULT ================= */
+
+    .result {
+        background: linear-gradient(135deg, #111827, #1d4ed8);
+        color: white;
+        padding: 38px 30px;
+        border-radius: 18px;
+        text-align: center;
+        margin-bottom: 30px;
+        box-shadow: 0 12px 35px rgba(30, 64, 175, 0.22);
+    }
+
+    .result-icon {
+        font-size: 45px;
+        margin-bottom: 5px;
+    }
+
+    .result h2 {
+        margin: 8px 0;
+        font-size: 27px;
+    }
+
+    .result p {
+        color: #dbeafe;
+    }
+
+    .prediction-value {
+        font-size: 55px;
+        font-weight: 800;
+        margin: 15px 0 5px;
+    }
+
+    .prediction-label {
+        color: #dbeafe;
+        font-size: 15px;
+    }
+
+    .difference {
+        margin-top: 20px;
+        padding: 12px 18px;
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 9px;
+        display: inline-block;
+        font-size: 14px;
+    }
+
+    /* ================= MODEL INFO ================= */
+
+    .model-info {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+        margin-bottom: 30px;
+    }
+
+    .info-card {
+        background: white;
+        padding: 25px 20px;
+        border-radius: 15px;
+        border: 1px solid #e5e7eb;
+        text-align: center;
+        transition: 0.2s ease;
+    }
+
+    .info-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(15, 23, 42, 0.08);
+    }
+
+    .info-card .icon {
+        width: 50px;
+        height: 50px;
+        margin: 0 auto 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #eff6ff;
+        border-radius: 13px;
+        font-size: 25px;
+    }
+
+    .info-card h3 {
+        margin: 6px 0 9px;
+        font-size: 18px;
+    }
+
+    .info-card p {
+        color: #64748b;
+        font-size: 14px;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    /* ================= METRICS ================= */
+
+    .metrics {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+        margin-bottom: 30px;
+    }
+
+    .metric-card {
+        background: white;
+        padding: 24px;
+        border-radius: 15px;
+        border: 1px solid #e5e7eb;
+        text-align: center;
+    }
+
+    .metric-card h3 {
+        margin: 0 0 12px;
+        font-size: 14px;
+        color: #64748b;
+    }
+
+    .metric-value {
+        font-size: 30px;
+        font-weight: 800;
+        color: #2563eb;
+    }
+
+    /* ================= PLAYER STATS ================= */
+
+    .player-stats {
+        background: white;
+        padding: 28px;
+        border-radius: 16px;
+        border: 1px solid #e5e7eb;
+        margin-bottom: 30px;
+    }
+
+    .player-stats h2 {
+        margin: 0 0 22px;
+        font-size: 22px;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+    }
+
+    .stat-card {
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+        border-radius: 11px;
+        padding: 17px 12px;
+        text-align: center;
+        transition: 0.2s ease;
+    }
+
+    .stat-card:hover {
+        border-color: #bfdbfe;
+        transform: translateY(-2px);
+    }
+
+    .stat-card span {
+        display: block;
+        color: #64748b;
+        font-size: 13px;
+        margin-bottom: 8px;
+    }
+
+    .stat-card strong {
+        font-size: 20px;
+        color: #172033;
+    }
+
+    /* ================= FEATURES ================= */
+
+    .features {
+        background: white;
+        padding: 28px;
+        border-radius: 16px;
+        border: 1px solid #e5e7eb;
+        margin-bottom: 30px;
+    }
+
+    .features h2 {
+        margin: 0 0 20px;
+        font-size: 22px;
+    }
+
+    .feature-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .feature-item {
+        padding: 15px;
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        font-size: 14px;
+        color: #334155;
+        transition: 0.2s ease;
+    }
+
+    .feature-item:hover {
+        background: #eff6ff;
+        border-color: #bfdbfe;
+    }
+
+    /* ================= NOTE ================= */
+
+    .note {
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        border-left: 5px solid #2563eb;
+        padding: 22px;
+        border-radius: 12px;
+        margin-bottom: 30px;
+    }
+
+    .note strong:first-child {
+        font-size: 17px;
+        color: #1e3a8a;
+    }
+
+    .note p {
+        color: #475569;
+        line-height: 1.65;
+        margin: 10px 0 0;
+        font-size: 14px;
+    }
+
+    /* ================= BACK ================= */
+
+    .back {
+        display: inline-block;
+        margin-bottom: 40px;
+        color: #2563eb;
+        text-decoration: none;
+        font-weight: 700;
+        padding: 10px 0;
+    }
+
+    .back:hover {
+        color: #1d4ed8;
+    }
+
+    /* ================= FOOTER ================= */
+
+    footer {
+        background: #111827;
+        color: #9ca3af;
+        text-align: center;
+        padding: 25px 20px;
+        font-size: 14px;
+        line-height: 1.7;
+        margin-top: 10px;
+    }
+
+    /* ================= RESPONSIVE ================= */
+
+    @media (max-width: 950px) {
+        .nav-links {
+            justify-content: center;
+        }
+
+        .model-info,
+        .metrics {
+            grid-template-columns: 1fr;
+        }
+
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 750px) {
+        .navbar {
+            justify-content: center;
+        }
+
+        .logo {
+            width: 100%;
+            text-align: center;
+        }
+
+        .nav-links {
+            width: 100%;
+        }
+
+        .nav-links a {
+            font-size: 13px;
+        }
+
+        .page-header {
+            padding-top: 32px;
+        }
+
+        .page-header h1 {
+            font-size: 29px;
+        }
+
+        .prediction-box,
+        .player-stats,
+        .features {
+            padding: 22px;
+        }
+
+        .prediction-box > p {
+            margin-left: 0;
+        }
+
+        .feature-list {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 500px) {
+        .container {
+            width: 94%;
+        }
+
+        .nav-links {
+            gap: 4px;
+        }
+
+        .nav-links a {
+            padding: 8px 9px;
+            font-size: 12px;
+        }
+
+        .page-header h1 {
+            font-size: 25px;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .prediction-value {
+            font-size: 43px;
+        }
+
+        .result {
+            padding: 30px 18px;
+        }
+    }
+</style>
+```
+
+</head>
+
+<body>
+
+```
+<!-- ================= NAVBAR ================= -->
+
+<nav class="navbar">
+
+    <a href="{{ url_for('home') }}" class="logo">
+        🏀 NBA Analytics
+    </a>
+
+    <div class="nav-links">
+
+        <a href="{{ url_for('home') }}">
+            Home
+        </a>
+
+        <a href="{{ url_for('dashboard') }}">
+            Dashboard
+        </a>
+
+        <a href="{{ url_for('player_profile', player_name='LeBron James') }}">
+            Player
+        </a>
+
+        <a href="{{ url_for('compare') }}">
+            Compare
+        </a>
+
+        <a href="{{ url_for('prediction') }}" class="active">
+            Prediction
+        </a>
+
+        <a href="{{ url_for('analysis') }}">
+            Analysis
+        </a>
+
+        <a href="{{ url_for('ranking') }}">
+            Rankings
+        </a>
+
+        <a href="{{ url_for('season_analysis') }}">
+            Season Analysis
+        </a>
+
+        <a href="{{ url_for('live') }}">
+            🔴 Live
+        </a>
+
+        <a href="{{ url_for('logout') }}">
+            Logout
+        </a>
+
+    </div>
+
+</nav>
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="container">
+
+    <!-- HEADER -->
+
+    <section class="page-header">
+
+        <div class="badge">
+            🤖 Machine Learning
+        </div>
+
+        <h1>
+            NBA Performance Prediction
+        </h1>
+
+        <p>
+            Use machine learning to estimate player performance
+            and understand how statistical features influence
+            predicted Win Shares.
+        </p>
+
+    </section>
+
+
+    <!-- ERROR -->
+
+    {% if error %}
+
+        <div class="error">
+            ⚠️ {{ error }}
+        </div>
+
+    {% endif %}
+
+
+    <!-- PREDICTION FORM -->
+
+    <section class="prediction-box">
+
+        <div class="section-heading">
+
+            <div class="section-icon">
+                🎯
+            </div>
+
+            <h2>
+                Select NBA Player
+            </h2>
+
+        </div>
+
+        <p>
+            Select a player from the available dataset and generate
+            an AI-based performance prediction using the trained
+            Random Forest model.
+        </p>
+
+        <form method="POST">
+
+            <div class="form-group">
+
+                <label for="player">
+                    NBA Player
+                </label>
+
+                <select
+                    name="player"
+                    id="player"
+                    required>
+
+                    <option value="">
+                        Select a player
+                    </option>
+
+                    {% for player in players %}
+
+                        <option
+                            value="{{ player }}"
+                            {% if player == selected_player %}
+                                selected
+                            {% endif %}>
+
+                            {{ player }}
+
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+            <button
+                type="submit"
+                class="predict-btn">
+
+                🤖 Generate Prediction
+
+            </button>
+
+        </form>
+
+    </section>
+
+
+    <!-- RESULT -->
+
+    {% if prediction_result is not none %}
+
+        <section class="result">
+
+            <div class="result-icon">
+                🤖
+            </div>
+
+            <h2>
+                Prediction Result
+            </h2>
+
+            {% if selected_player %}
+
+                <p>
+                    Player:
+                    <strong>
+                        {{ selected_player }}
+                    </strong>
+                </p>
+
+            {% endif %}
+
+            <div class="prediction-value">
+                {{ prediction_result }}
+            </div>
+
+            <div class="prediction-label">
+                Predicted Win Shares
+            </div>
+
+            {% if player_data %}
+
+                <div class="difference">
+
+                    Actual Win Shares:
+                    <strong>
+                        {{ player_data["Win_Shares"] }}
+                    </strong>
+
+                    &nbsp; | &nbsp;
+
+                    Difference:
+                    <strong>
+                        {{ player_data["difference"] }}
+                    </strong>
+
+                </div>
+
+            {% endif %}
+
+        </section>
+
+    {% endif %}
+
+
+    <!-- MODEL INFORMATION -->
+
+    <section class="model-info">
+
+        <div class="info-card">
+
+            <div class="icon">
+                🌲
+            </div>
+
+            <h3>
+                Random Forest
+            </h3>
+
+            <p>
+                An ensemble machine learning algorithm
+                used to estimate player performance.
+            </p>
+
+        </div>
+
+
+        <div class="info-card">
+
+            <div class="icon">
+                📊
+            </div>
+
+            <h3>
+                Performance Data
+            </h3>
+
+            <p>
+                Player statistics are used as input
+                features for the prediction model.
+            </p>
+
+        </div>
+
+
+        <div class="info-card">
+
+            <div class="icon">
+                🏆
+            </div>
+
+            <h3>
+                Win Shares
+            </h3>
+
+            <p>
+                The model estimates the player's
+                expected Win Shares value.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- MODEL METRICS -->
+
+    {% if mae is not none %}
+
+        <section class="metrics">
+
+            <div class="metric-card">
+
+                <h3>
+                    Mean Absolute Error
+                </h3>
+
+                <div class="metric-value">
+                    {{ "%.2f"|format(mae) }}
+                </div>
+
+            </div>
+
+
+            <div class="metric-card">
+
+                <h3>
+                    Mean Squared Error
+                </h3>
+
+                <div class="metric-value">
+                    {{ "%.3f"|format(mse) }}
+                </div>
+
+            </div>
+
+
+            <div class="metric-card">
+
+                <h3>
+                    R² Score
+                </h3>
+
+                <div class="metric-value">
+                    {{ "%.3f"|format(r2) }}
+                </div>
+
+            </div>
+
+        </section>
+
+    {% endif %}
+
+
+    <!-- PLAYER STATISTICS -->
+
+    {% if player_data %}
+
+        <section class="player-stats">
+
+            <h2>
+                📊 {{ player_data["Player"] }} — Statistics
+            </h2>
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+
+                    <span>
+                        Points
+                    </span>
+
+                    <strong>
+                        {{ player_data["Points"] }}
+                    </strong>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <span>
+                        Rebounds
+                    </span>
+
+                    <strong>
+                        {{ player_data["Rebounds"] }}
+                    </strong>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <span>
+                        Assists
+                    </span>
+
+                    <strong>
+                        {{ player_data["Assists"] }}
+                    </strong>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <span>
+                        Steals
+                    </span>
+
+                    <strong>
+                        {{ player_data["Steals"] }}
+                    </strong>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <span>
+                        Blocks
+                    </span>
+
+                    <strong>
+                        {{ player_data["Blocks"] }}
+                    </strong>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <span>
+                        FG%
+                    </span>
+
+                    <strong>
+                        {{ player_data["FG_Percentage"] }}
+                    </strong>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <span>
+                        TS%
+                    </span>
+
+                    <strong>
+                        {{ player_data["TS_Percentage"] }}
+                    </strong>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <span>
+                        PER
+                    </span>
+
+                    <strong>
+                        {{ player_data["PER"] }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    {% endif %}
+
+
+    <!-- MACHINE LEARNING FEATURES -->
+
+    <section class="features">
+
+        <h2>
+            📈 Machine Learning Features
+        </h2>
+
+        <div class="feature-list">
+
+            <div class="feature-item">
+                🏀 Points
+            </div>
+
+            <div class="feature-item">
+                🔄 Rebounds
+            </div>
+
+            <div class="feature-item">
+                🎯 Assists
+            </div>
+
+            <div class="feature-item">
+                🛡️ Steals
+            </div>
+
+            <div class="feature-item">
+                🚫 Blocks
+            </div>
+
+            <div class="feature-item">
+                🎯 Field Goal Percentage
+            </div>
+
+            <div class="feature-item">
+                📈 True Shooting Percentage
+            </div>
+
+            <div class="feature-item">
+                ⭐ Player Efficiency Rating (PER)
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- HOW IT WORKS -->
+
+    <section class="note">
+
+        <strong>
+            💡 How the prediction works
+        </strong>
+
+        <p>
+            The Random Forest model learns relationships between
+            player statistics and Win Shares using the available
+            NBA player dataset.
+        </p>
+
+        <p>
+            <strong>
+                Model Input:
+            </strong>
+            Points, Rebounds, Assists, Steals, Blocks,
+            FG%, TS%, and PER.
+        </p>
+
+        <p>
+            <strong>
+                Model Output:
+            </strong>
+            Predicted Win Shares.
+        </p>
+
+    </section>
+
+
+    <!-- BACK -->
+
+    <a href="{{ url_for('dashboard') }}" class="back">
+        ← Back to Dashboard
+    </a>
+
+</main>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+    🏀 NBA Player Performance Analytics Platform
+
+    <br>
+
+    Python • Flask • Pandas • Scikit-Learn •
+    Random Forest • NBA API
+
+</footer>
+```
+
+</body>
+</html>

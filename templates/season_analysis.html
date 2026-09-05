@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+```
+<title>NBA Season Analysis</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: linear-gradient(135deg, #f5f7fb, #eef2f7);
+        color: #1f2937;
+    }
+
+    .container {
+        width: 94%;
+        max-width: 1400px;
+        margin: 35px auto 60px;
+    }
+
+    .header {
+        background: linear-gradient(135deg, #111827, #1f2937);
+        color: white;
+        padding: 32px;
+        border-radius: 18px;
+        margin-bottom: 25px;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .header h1 {
+        margin: 0 0 8px;
+        font-size: 34px;
+    }
+
+    .header p {
+        margin: 0;
+        color: #d1d5db;
+        font-size: 16px;
+    }
+
+    .selection-card {
+        background: white;
+        padding: 25px;
+        border-radius: 16px;
+        margin-bottom: 25px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    }
+
+    .selection-title {
+        font-size: 21px;
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+
+    .selection-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    select {
+        width: 100%;
+        padding: 13px 14px;
+        border: 1px solid #d1d5db;
+        border-radius: 10px;
+        background: white;
+        font-size: 15px;
+        cursor: pointer;
+        outline: none;
+    }
+
+    select:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    .analyze-btn {
+        margin-top: 20px;
+        width: 100%;
+        padding: 14px;
+        border: none;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        color: white;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .analyze-btn:hover {
+        opacity: 0.92;
+    }
+
+    .error {
+        background: #fee2e2;
+        color: #991b1b;
+        padding: 15px 18px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        font-weight: 600;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+        margin-bottom: 25px;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 24px;
+        border-radius: 16px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
+        text-align: center;
+    }
+
+    .stat-label {
+        color: #6b7280;
+        font-size: 14px;
+        margin-bottom: 10px;
+        font-weight: 600;
+    }
+
+    .stat-value {
+        font-size: 32px;
+        font-weight: 800;
+        color: #111827;
+    }
+
+    .stat-unit {
+        color: #2563eb;
+        font-weight: 700;
+        font-size: 13px;
+        margin-top: 5px;
+    }
+
+    .best-card {
+        background: linear-gradient(135deg, #fff7ed, #fffbeb);
+        border: 1px solid #fed7aa;
+        padding: 25px;
+        border-radius: 16px;
+        margin-bottom: 25px;
+    }
+
+    .best-card h2 {
+        margin-top: 0;
+        color: #9a3412;
+    }
+
+    .best-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .best-player {
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1.6;
+    }
+
+    .best-number {
+        font-size: 40px;
+        font-weight: 900;
+        color: #ea580c;
+    }
+
+    .section-title {
+        font-size: 24px;
+        margin: 35px 0 18px;
+        color: #111827;
+    }
+
+    .charts-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 22px;
+        margin-bottom: 30px;
+    }
+
+    .chart-card {
+        background: white;
+        padding: 22px;
+        border-radius: 16px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
+    }
+
+    .chart-card h3 {
+        margin: 0 0 18px;
+        font-size: 18px;
+    }
+
+    .chart-wrapper {
+        position: relative;
+        height: 330px;
+    }
+
+    .comparison-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+        margin-bottom: 30px;
+    }
+
+    .comparison-card {
+        background: white;
+        padding: 22px;
+        border-radius: 16px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
+        text-align: center;
+    }
+
+    .comparison-card h3 {
+        font-size: 15px;
+        color: #6b7280;
+        margin: 0 0 14px;
+    }
+
+    .comparison-season {
+        font-size: 23px;
+        font-weight: 800;
+        color: #111827;
+    }
+
+    .comparison-value {
+        margin-top: 8px;
+        font-size: 18px;
+        color: #2563eb;
+        font-weight: 700;
+    }
+
+    .table-card {
+        background: white;
+        padding: 22px;
+        border-radius: 16px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 900px;
+    }
+
+    thead {
+        background: #111827;
+        color: white;
+    }
+
+    th {
+        padding: 14px 12px;
+        text-align: center;
+        font-size: 13px;
+    }
+
+    td {
+        padding: 13px 12px;
+        text-align: center;
+        border-bottom: 1px solid #e5e7eb;
+        font-size: 14px;
+    }
+
+    tbody tr:hover {
+        background: #f9fafb;
+    }
+
+    tbody tr.selected-row {
+        background: #eff6ff;
+        font-weight: 700;
+    }
+
+    .season-name {
+        font-weight: 800;
+        color: #2563eb;
+    }
+
+    .note {
+        margin-top: 20px;
+        background: #f3f4f6;
+        border-left: 4px solid #2563eb;
+        padding: 16px;
+        border-radius: 8px;
+        color: #4b5563;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .footer {
+        margin-top: 40px;
+        text-align: center;
+        color: #6b7280;
+        font-size: 14px;
+    }
+
+    @media (max-width: 1000px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .comparison-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .charts-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 650px) {
+        .container {
+            width: 95%;
+        }
+
+        .selection-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .comparison-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .header h1 {
+            font-size: 26px;
+        }
+
+        .best-content {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+</style>
+```
+
+</head>
+
+<body>
+
+<div class="container">
+
+```
+<div class="header">
+    <h1>🏀 NBA Season Analysis</h1>
+    <p>Analyze player performance across different NBA seasons</p>
+</div>
+
+{% if error %}
+<div class="error">
+    {{ error }}
+</div>
+{% endif %}
+
+<div class="selection-card">
+
+    <div class="selection-title">
+        🔍 Select Player & Season
+    </div>
+
+    <form method="GET" action="{{ url_for('season_analysis') }}">
+
+        <div class="selection-grid">
+
+            <div class="form-group">
+
+                <label for="player">
+                    Player
+                </label>
+
+                <select id="player" name="player">
+
+                    {% for player in players %}
+
+                    <option
+                        value="{{ player }}"
+                        {% if player == selected_player %}
+                        selected
+                        {% endif %}
+                    >
+                        {{ player }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="season">
+                    Season
+                </label>
+
+                <select id="season" name="season">
+
+                    <option
+                        value="All"
+                        {% if selected_season == "All" %}
+                        selected
+                        {% endif %}
+                    >
+                        All Seasons
+                    </option>
+
+                    {% for season in seasons %}
+
+                    <option
+                        value="{{ season }}"
+                        {% if season == selected_season %}
+                        selected
+                        {% endif %}
+                    >
+                        {{ season }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+        </div>
+
+        <button type="submit" class="analyze-btn">
+            Analyze Season
+        </button>
+
+    </form>
+
+</div>
+
+{% if selected_record %}
+
+<div class="stats-grid">
+
+    <div class="stat-card">
+
+        <div class="stat-label">
+            Selected Season
+        </div>
+
+        <div class="stat-value">
+            {{ selected_record["Season"] }}
+        </div>
+
+        <div class="stat-unit">
+            {{ selected_player }}
+        </div>
+
+    </div>
+
+    <div class="stat-card">
+
+        <div class="stat-label">
+            Points Per Game
+        </div>
+
+        <div class="stat-value">
+            {{ selected_record["PPG"] }}
+        </div>
+
+        <div class="stat-unit">
+            PPG
+        </div>
+
+    </div>
+
+    <div class="stat-card">
+
+        <div class="stat-label">
+            Rebounds Per Game
+        </div>
+
+        <div class="stat-value">
+            {{ selected_record["RPG"] }}
+        </div>
+
+        <div class="stat-unit">
+            RPG
+        </div>
+
+    </div>
+
+    <div class="stat-card">
+
+        <div class="stat-label">
+            Assists Per Game
+        </div>
+
+        <div class="stat-value">
+            {{ selected_record["APG"] }}
+        </div>
+
+        <div class="stat-unit">
+            APG
+        </div>
+
+    </div>
+
+</div>
+
+{% if best_season %}
+
+<div class="best-card">
+
+    <h2>🏆 Best Scoring Season</h2>
+
+    <div class="best-content">
+
+        <div class="best-player">
+
+            {{ selected_player }}
+            had the highest scoring performance in
+
+            <strong>
+                {{ best_season["Season"] }}
+            </strong>
+
+            with
+
+            <strong>
+                {{ best_season["PPG"] }}
+            </strong>
+
+            points per game.
+
+        </div>
+
+        <div>
+
+            <div class="best-number">
+                {{ best_season["PPG"] }}
+            </div>
+
+            <div>
+                Points Per Game
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endif %}
+
+<h2 class="section-title">
+    📊 Season Performance Trends
+</h2>
+
+<div class="charts-grid">
+
+    <div class="chart-card">
+
+        <h3>
+            📈 Points Per Game
+        </h3>
+
+        <div class="chart-wrapper">
+            <canvas id="ppgChart"></canvas>
+        </div>
+
+    </div>
+
+    <div class="chart-card">
+
+        <h3>
+            🏀 Rebounds Per Game
+        </h3>
+
+        <div class="chart-wrapper">
+            <canvas id="rpgChart"></canvas>
+        </div>
+
+    </div>
+
+    <div class="chart-card">
+
+        <h3>
+            🎯 Assists Per Game
+        </h3>
+
+        <div class="chart-wrapper">
+            <canvas id="apgChart"></canvas>
+        </div>
+
+    </div>
+
+    <div class="chart-card">
+
+        <h3>
+            📊 Field Goal Percentage
+        </h3>
+
+        <div class="chart-wrapper">
+            <canvas id="fgChart"></canvas>
+        </div>
+
+    </div>
+
+</div>
+
+<h2 class="section-title">
+    ⚖️ Season Comparison
+</h2>
+
+{% if comparison %}
+
+<div class="comparison-grid">
+
+    <div class="comparison-card">
+
+        <h3>
+            🏆 Best PPG Season
+        </h3>
+
+        {% if comparison["best_ppg"] %}
+
+        <div class="comparison-season">
+            {{ comparison["best_ppg"]["Season"] }}
+        </div>
+
+        <div class="comparison-value">
+            {{ comparison["best_ppg"]["PPG"] }} PPG
+        </div>
+
+        <div class="stat-label">
+            Points Per Game
+        </div>
+
+        {% endif %}
+
+    </div>
+
+    <div class="comparison-card">
+
+        <h3>
+            🏀 Highest RPG Season
+        </h3>
+
+        {% if comparison["best_rpg"] %}
+
+        <div class="comparison-season">
+            {{ comparison["best_rpg"]["Season"] }}
+        </div>
+
+        <div class="comparison-value">
+            {{ comparison["best_rpg"]["RPG"] }} RPG
+        </div>
+
+        <div class="stat-label">
+            Rebounds Per Game
+        </div>
+
+        {% endif %}
+
+    </div>
+
+    <div class="comparison-card">
+
+        <h3>
+            🎯 Highest APG Season
+        </h3>
+
+        {% if comparison["best_apg"] %}
+
+        <div class="comparison-season">
+            {{ comparison["best_apg"]["Season"] }}
+        </div>
+
+        <div class="comparison-value">
+            {{ comparison["best_apg"]["APG"] }} APG
+        </div>
+
+        <div class="stat-label">
+            Assists Per Game
+        </div>
+
+        {% endif %}
+
+    </div>
+
+    <div class="comparison-card">
+
+        <h3>
+            📊 Highest FG%
+        </h3>
+
+        {% if comparison["best_fg"] %}
+
+        <div class="comparison-season">
+            {{ comparison["best_fg"]["Season"] }}
+        </div>
+
+        <div class="comparison-value">
+            {{ comparison["best_fg"]["FG_Percentage"] }}%
+        </div>
+
+        <div class="stat-label">
+            Field Goal Percentage
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endif %}
+
+<h2 class="section-title">
+    📋 Season-by-Season Performance
+</h2>
+
+<div class="table-card">
+
+    <table>
+
+        <thead>
+
+            <tr>
+                <th>Season</th>
+                <th>Games</th>
+                <th>PPG</th>
+                <th>RPG</th>
+                <th>APG</th>
+                <th>SPG</th>
+                <th>BPG</th>
+                <th>FG%</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for row in season_data %}
+
+            <tr
+                {% if selected_season != "All" and row["Season"] == selected_season %}
+                class="selected-row"
+                {% endif %}
+            >
+
+                <td class="season-name">
+                    {{ row["Season"] }}
+                </td>
+
+                <td>
+                    {{ row["Games"] }}
+                </td>
+
+                <td>
+                    {{ row["PPG"] }}
+                </td>
+
+                <td>
+                    {{ row["RPG"] }}
+                </td>
+
+                <td>
+                    {{ row["APG"] }}
+                </td>
+
+                <td>
+                    {{ row["SPG"] }}
+                </td>
+
+                <td>
+                    {{ row["BPG"] }}
+                </td>
+
+                <td>
+                    {{ row["FG_Percentage"] }}%
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<div class="note">
+
+    <strong>Note:</strong>
+
+    The collected season dataset contains total season
+    statistics. This page calculates per-game averages
+    using total statistics divided by games played.
+
+    PPG, RPG, APG, SPG and BPG are therefore calculated
+    from the total season statistics.
+
+    TS% is currently unavailable in the collected season
+    dataset and is therefore not displayed.
+
+</div>
+
+{% endif %}
+
+<div class="footer">
+
+    <strong>
+        NBA Player Performance Analytics
+    </strong>
+
+    <br>
+
+    Season Analysis Module
+
+</div>
+```
+
+</div>
+
+<div
+    id="seasonConfig"
+    data-player="{{ selected_player|e }}"
+    data-api-url="{{ url_for('season_analysis_data') }}"
+    style="display: none;"
+></div>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const config = document.getElementById("seasonConfig");
+
+    if (!config) {
+        return;
+    }
+
+    const player = config.dataset.player;
+    const apiUrl = config.dataset.apiUrl;
+
+    if (!player || !apiUrl) {
+        return;
+    }
+
+    fetch(
+        apiUrl + "?player=" + encodeURIComponent(player)
+    )
+
+    .then(function (response) {
+
+        if (!response.ok) {
+            throw new Error(
+                "Unable to load season chart data."
+            );
+        }
+
+        return response.json();
+
+    })
+
+    .then(function (data) {
+
+        if (!data || data.length === 0) {
+
+            console.log(
+                "No season chart data found."
+            );
+
+            return;
+        }
+
+        const labels = data.map(function (item) {
+            return item.season;
+        });
+
+        const ppgData = data.map(function (item) {
+            return Number(item.ppg) || 0;
+        });
+
+        const rpgData = data.map(function (item) {
+            return Number(item.rpg) || 0;
+        });
+
+        const apgData = data.map(function (item) {
+            return Number(item.apg) || 0;
+        });
+
+        const fgData = data.map(function (item) {
+            return Number(item.fg) || 0;
+        });
+
+        const commonOptions = {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            interaction: {
+                mode: "index",
+                intersect: false
+            },
+
+            plugins: {
+                legend: {
+                    display: true
+                }
+            },
+
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+
+        };
+
+
+        const ppgCanvas =
+            document.getElementById("ppgChart");
+
+        if (ppgCanvas) {
+
+            new Chart(ppgCanvas, {
+
+                type: "line",
+
+                data: {
+
+                    labels: labels,
+
+                    datasets: [
+
+                        {
+                            label: "PPG",
+                            data: ppgData,
+                            tension: 0.3,
+                            fill: false,
+                            pointRadius: 4
+                        }
+
+                    ]
+
+                },
+
+                options: commonOptions
+
+            });
+
+        }
+
+
+        const rpgCanvas =
+            document.getElementById("rpgChart");
+
+        if (rpgCanvas) {
+
+            new Chart(rpgCanvas, {
+
+                type: "line",
+
+                data: {
+
+                    labels: labels,
+
+                    datasets: [
+
+                        {
+                            label: "RPG",
+                            data: rpgData,
+                            tension: 0.3,
+                            fill: false,
+                            pointRadius: 4
+                        }
+
+                    ]
+
+                },
+
+                options: commonOptions
+
+            });
+
+        }
+
+
+        const apgCanvas =
+            document.getElementById("apgChart");
+
+        if (apgCanvas) {
+
+            new Chart(apgCanvas, {
+
+                type: "line",
+
+                data: {
+
+                    labels: labels,
+
+                    datasets: [
+
+                        {
+                            label: "APG",
+                            data: apgData,
+                            tension: 0.3,
+                            fill: false,
+                            pointRadius: 4
+                        }
+
+                    ]
+
+                },
+
+                options: commonOptions
+
+            });
+
+        }
+
+
+        const fgCanvas =
+            document.getElementById("fgChart");
+
+        if (fgCanvas) {
+
+            new Chart(fgCanvas, {
+
+                type: "line",
+
+                data: {
+
+                    labels: labels,
+
+                    datasets: [
+
+                        {
+                            label: "FG%",
+                            data: fgData,
+                            tension: 0.3,
+                            fill: false,
+                            pointRadius: 4
+                        }
+
+                    ]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    interaction: {
+                        mode: "index",
+                        intersect: false
+                    },
+
+                    plugins: {
+
+                        legend: {
+                            display: true
+                        }
+
+                    },
+
+                    scales: {
+
+                        y: {
+
+                            beginAtZero: false,
+
+                            suggestedMin: 30,
+
+                            suggestedMax: 70
+
+                        }
+
+                    }
+
+                }
+
+            });
+
+        }
+
+    })
+
+    .catch(function (error) {
+
+        console.error(
+            "Season chart error:",
+            error
+        );
+
+    });
+
+});
+
+</script>
+
+</body>
+</html>

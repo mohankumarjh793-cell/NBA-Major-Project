@@ -1,0 +1,783 @@
+/* NBA PLAYER PERFORMANCE ANALYTICS */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f4f6f9;
+    color: #1f2937;
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+button,
+input,
+select {
+    font-family: inherit;
+}
+
+
+/* =========================
+   NAVBAR
+   ========================= */
+
+.navbar {
+    background: #111827;
+    color: white;
+    min-height: 70px;
+    padding: 12px 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.nav-brand {
+    color: white;
+    font-size: 24px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.nav-links a {
+    color: #e5e7eb;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.nav-links a:hover {
+    background: #f97316;
+    color: white;
+}
+
+
+/* =========================
+   CONTAINER
+   ========================= */
+
+.container {
+    width: 92%;
+    max-width: 1200px;
+    margin: auto;
+    padding: 40px 0 60px;
+}
+
+
+/* =========================
+   PAGE HEADER
+   ========================= */
+
+.page-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.page-header h1 {
+    font-size: 38px;
+    color: #111827;
+    margin-bottom: 8px;
+}
+
+.page-header p {
+    color: #667085;
+    font-size: 16px;
+}
+
+
+/* =========================
+   HERO
+   ========================= */
+
+.hero {
+    background: white;
+    padding: 60px 30px;
+    border-radius: 18px;
+    text-align: center;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    margin-bottom: 30px;
+}
+
+.hero h1 {
+    font-size: 44px;
+    color: #111827;
+    margin-bottom: 12px;
+}
+
+.hero p {
+    color: #667085;
+    font-size: 18px;
+    max-width: 750px;
+    margin: auto;
+}
+
+
+/* =========================
+   BUTTONS
+   ========================= */
+
+.btn,
+.primary-btn,
+.submit-btn,
+.compare-btn,
+.save-btn {
+    display: inline-block;
+    border: none;
+    background: #f97316;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 9px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.btn:hover,
+.primary-btn:hover,
+.submit-btn:hover,
+.compare-btn:hover,
+.save-btn:hover {
+    background: #ea580c;
+    transform: translateY(-2px);
+}
+
+
+/* =========================
+   FORMS
+   ========================= */
+
+.form-card,
+.auth-card,
+.comparison-form-card {
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.07);
+    margin-bottom: 25px;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 7px;
+    font-weight: 700;
+    color: #344054;
+}
+
+.form-group input,
+.form-group select,
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #d0d5dd;
+    border-radius: 9px;
+    outline: none;
+    background: white;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+    border-color: #f97316;
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.12);
+}
+
+
+/* =========================
+   COMPARISON
+   ========================= */
+
+.comparison-selects {
+    display: grid;
+    grid-template-columns: 1fr 80px 1fr;
+    gap: 15px;
+    align-items: end;
+}
+
+.vs-box {
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #111827;
+    color: white;
+    border-radius: 9px;
+    font-weight: 800;
+}
+
+.comparison-header {
+    display: grid;
+    grid-template-columns: 1fr 80px 1fr;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.comparison-header .player-card {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
+}
+
+.vs-large {
+    width: 65px;
+    height: 65px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    border-radius: 50%;
+    background: #111827;
+    color: white;
+    font-weight: 800;
+}
+
+
+/* =========================
+   CARDS
+   ========================= */
+
+.card,
+.dashboard-card,
+.profile-card,
+.analysis-card,
+.chart-card,
+.table-card,
+.search-card,
+.feature-card,
+.score-card,
+.category-card,
+.stat-card,
+.dashboard-stat,
+.player-item,
+.live-game-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 15px;
+    box-shadow: 0 7px 25px rgba(0, 0, 0, 0.06);
+}
+
+.dashboard-card,
+.profile-card,
+.analysis-card,
+.table-card,
+.search-card {
+    padding: 28px;
+    margin-bottom: 25px;
+}
+
+.feature-card {
+    padding: 25px;
+    text-align: center;
+}
+
+.feature-card h3 {
+    margin: 10px 0;
+    color: #111827;
+}
+
+.feature-card p {
+    color: #667085;
+}
+
+
+/* =========================
+   GRID
+   ========================= */
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.player-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+
+/* =========================
+   STAT CARDS
+   ========================= */
+
+.stat-card,
+.dashboard-stat {
+    padding: 22px;
+    text-align: center;
+}
+
+.stat-card h3,
+.dashboard-stat h3 {
+    color: #667085;
+    font-size: 13px;
+    margin-bottom: 7px;
+}
+
+.stat-value,
+.dashboard-stat strong {
+    font-size: 30px;
+    font-weight: 800;
+    color: #f97316;
+}
+
+
+/* =========================
+   TABLE
+   ========================= */
+
+.table-wrapper,
+.saved-table {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px;
+}
+
+thead {
+    background: #111827;
+    color: white;
+}
+
+th,
+td {
+    padding: 13px 15px;
+    border-bottom: 1px solid #e5e7eb;
+    text-align: center;
+}
+
+th {
+    font-size: 14px;
+}
+
+td {
+    color: #344054;
+    font-size: 14px;
+}
+
+th:first-child,
+td:first-child {
+    text-align: left;
+}
+
+tbody tr:hover {
+    background: #fff7ed;
+}
+
+
+/* =========================
+   ANALYSIS
+   ========================= */
+
+.winner-box {
+    text-align: center;
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    padding: 25px;
+    border-radius: 14px;
+    margin-bottom: 25px;
+}
+
+.winner-name {
+    font-size: 28px;
+    font-weight: 800;
+    color: #ea580c;
+}
+
+.score-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.score-card {
+    padding: 25px;
+    text-align: center;
+}
+
+.score-number {
+    font-size: 42px;
+    font-weight: 800;
+    color: #f97316;
+}
+
+.category-card {
+    padding: 18px;
+}
+
+.category-name {
+    font-weight: 700;
+}
+
+.category-winner {
+    color: #ea580c;
+    font-weight: 700;
+}
+
+
+/* =========================
+   CHARTS
+   ========================= */
+
+.charts-section {
+    background: white;
+    padding: 28px;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+}
+
+.chart-card {
+    padding: 25px;
+    margin-top: 20px;
+}
+
+.chart-container {
+    width: 100%;
+    height: 380px;
+    position: relative;
+}
+
+
+/* =========================
+   SEARCH
+   ========================= */
+
+.search-form {
+    display: flex;
+    gap: 10px;
+    max-width: 700px;
+    margin: 25px auto;
+}
+
+.search-form input {
+    flex: 1;
+    padding: 13px;
+    border: 1px solid #d0d5dd;
+    border-radius: 9px;
+    outline: none;
+}
+
+.search-form button {
+    border: none;
+    padding: 13px 20px;
+    background: #f97316;
+    color: white;
+    border-radius: 9px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.player-item {
+    padding: 18px;
+}
+
+.player-item a {
+    color: #111827;
+    font-weight: 700;
+}
+
+
+/* =========================
+   AUTH
+   ========================= */
+
+.auth-page {
+    min-height: calc(100vh - 70px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 430px;
+}
+
+.auth-card h1,
+.auth-card h2 {
+    text-align: center;
+    color: #111827;
+    margin-bottom: 20px;
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 18px;
+    color: #667085;
+}
+
+.auth-footer a {
+    color: #f97316;
+    font-weight: 700;
+}
+
+
+/* =========================
+   ALERTS
+   ========================= */
+
+.alert {
+    padding: 13px 16px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.alert.success {
+    background: #ecfdf3;
+    color: #067647;
+}
+
+.alert.error {
+    background: #fef3f2;
+    color: #b42318;
+}
+
+.alert.warning {
+    background: #fffaeb;
+    color: #b54708;
+}
+
+
+/* =========================
+   EMPTY STATE
+   ========================= */
+
+.empty-state {
+    background: white;
+    padding: 50px 20px;
+    text-align: center;
+    border-radius: 15px;
+    color: #667085;
+}
+
+.empty-state h3 {
+    color: #344054;
+    margin-bottom: 8px;
+}
+
+
+/* =========================
+   LIVE PAGE
+   ========================= */
+
+.live-game-card {
+    padding: 25px;
+    margin-bottom: 20px;
+}
+
+.live-badge {
+    display: inline-block;
+    background: #fee2e2;
+    color: #b91c1c;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.live-game-card h2 {
+    margin: 12px 0;
+    color: #111827;
+}
+
+
+/* =========================
+   DELETE BUTTON
+   ========================= */
+
+.delete-btn {
+    border: none;
+    background: #dc2626;
+    color: white;
+    padding: 8px 13px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.delete-btn:hover {
+    background: #b91c1c;
+}
+
+
+/* =========================
+   FOOTER
+   ========================= */
+
+.footer {
+    background: #111827;
+    color: #9ca3af;
+    text-align: center;
+    padding: 25px;
+    margin-top: 50px;
+}
+
+.footer strong {
+    color: white;
+}
+
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+
+@media (max-width: 900px) {
+
+    .navbar {
+        flex-direction: column;
+    }
+
+    .features-grid,
+    .player-list,
+    .stats-grid,
+    .dashboard-stats,
+    .category-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .hero h1 {
+        font-size: 36px;
+    }
+}
+
+
+@media (max-width: 650px) {
+
+    .navbar {
+        position: relative;
+    }
+
+    .nav-brand {
+        font-size: 20px;
+    }
+
+    .nav-links a {
+        font-size: 12px;
+        padding: 7px 8px;
+    }
+
+    .container {
+        width: 94%;
+        padding-top: 25px;
+    }
+
+    .page-header h1 {
+        font-size: 29px;
+    }
+
+    .hero {
+        padding: 40px 20px;
+    }
+
+    .hero h1 {
+        font-size: 30px;
+    }
+
+    .features-grid,
+    .player-list,
+    .stats-grid,
+    .dashboard-stats,
+    .category-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .comparison-selects,
+    .comparison-header {
+        grid-template-columns: 1fr;
+    }
+
+    .vs-box {
+        width: 65px;
+        margin: auto;
+    }
+
+    .score-container {
+        grid-template-columns: 1fr;
+    }
+
+    .search-form {
+        flex-direction: column;
+    }
+
+    .search-form button {
+        width: 100%;
+    }
+
+    .chart-container {
+        height: 300px;
+    }
+
+    .form-card,
+    .auth-card,
+    .comparison-form-card,
+    .dashboard-card,
+    .profile-card,
+    .analysis-card,
+    .table-card,
+    .search-card,
+    .charts-section {
+        padding: 20px;
+    }
+}

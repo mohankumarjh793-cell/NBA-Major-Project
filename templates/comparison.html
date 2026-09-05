@@ -1,0 +1,1976 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+```
+<title>NBA Analytics | Player Comparison</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f4f7fb;
+        color: #1f2937;
+        line-height: 1.6;
+    }
+
+    /* =========================
+       NAVBAR
+    ========================= */
+
+    .navbar {
+        background: #111827;
+        padding: 15px 25px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .logo {
+        color: white;
+        text-decoration: none;
+        font-size: 21px;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    .nav-links {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .nav-links a {
+        color: #ffffff;
+        text-decoration: none;
+        font-size: 13px;
+        padding: 7px 4px;
+        white-space: nowrap;
+        transition: color 0.2s ease;
+    }
+
+    .nav-links a:hover {
+        color: #60a5fa;
+    }
+
+    .nav-links a.active {
+        color: #60a5fa;
+        font-weight: bold;
+        border-bottom: 2px solid #60a5fa;
+    }
+
+    .nav-links a.live {
+        color: #f87171;
+        font-weight: bold;
+    }
+
+    /* =========================
+       MAIN
+    ========================= */
+
+    .container {
+        width: 92%;
+        max-width: 1200px;
+        margin: 40px auto;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 35px;
+    }
+
+    .page-title {
+        font-size: 38px;
+        color: #111827;
+        margin-bottom: 10px;
+        font-weight: 800;
+    }
+
+    .page-subtitle {
+        color: #6b7280;
+        font-size: 16px;
+    }
+
+    /* =========================
+       ERROR
+    ========================= */
+
+    .error-box {
+        background: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+        padding: 15px 20px;
+        border-radius: 12px;
+        margin-bottom: 25px;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    /* =========================
+       SELECTION
+    ========================= */
+
+    .select-box {
+        background: #ffffff;
+        padding: 30px;
+        border-radius: 18px;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+        margin-bottom: 30px;
+    }
+
+    .select-title {
+        color: #111827;
+        font-size: 22px;
+        margin-bottom: 22px;
+    }
+
+    .select-form {
+        display: grid;
+        grid-template-columns: 1fr 1fr auto;
+        gap: 16px;
+        align-items: end;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #374151;
+        font-weight: bold;
+    }
+
+    .form-group select {
+        width: 100%;
+        padding: 13px 14px;
+        border: 1px solid #d1d5db;
+        border-radius: 10px;
+        background: #ffffff;
+        color: #111827;
+        font-size: 15px;
+        outline: none;
+    }
+
+    .form-group select:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    .compare-button {
+        border: none;
+        background: #2563eb;
+        color: white;
+        padding: 13px 25px;
+        border-radius: 10px;
+        font-size: 15px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .compare-button:hover {
+        background: #1d4ed8;
+        transform: translateY(-2px);
+    }
+
+    /* =========================
+       PLAYER CARDS
+    ========================= */
+
+    .players-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+        margin-bottom: 30px;
+    }
+
+    .player-card {
+        background: #ffffff;
+        border-radius: 18px;
+        padding: 28px;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+    }
+
+    .player-one {
+        border-top: 5px solid #2563eb;
+    }
+
+    .player-two {
+        border-top: 5px solid #ef4444;
+    }
+
+    .player-card h2 {
+        color: #111827;
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .stat-line {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        padding: 12px 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .stat-line:last-child {
+        border-bottom: none;
+    }
+
+    .stat-line span {
+        color: #6b7280;
+    }
+
+    .stat-line strong {
+        color: #111827;
+    }
+
+    /* =========================
+       SECTION
+    ========================= */
+
+    .section-box {
+        background: #ffffff;
+        border-radius: 18px;
+        padding: 30px;
+        margin-bottom: 30px;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+    }
+
+    .section-title {
+        color: #111827;
+        font-size: 23px;
+        margin-bottom: 25px;
+    }
+
+    /* =========================
+       STAT COMPARISON
+    ========================= */
+
+    .comparison-row {
+        margin-bottom: 25px;
+    }
+
+    .comparison-row:last-child {
+        margin-bottom: 0;
+    }
+
+    .comparison-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 9px;
+        font-weight: bold;
+    }
+
+    .comparison-values {
+        color: #374151;
+        font-size: 14px;
+    }
+
+    .dual-bars {
+        display: grid;
+        gap: 7px;
+    }
+
+    .bar-label {
+        font-size: 11px;
+        font-weight: bold;
+    }
+
+    .blue-text {
+        color: #2563eb;
+    }
+
+    .red-text {
+        color: #ef4444;
+    }
+
+    .bar-track {
+        width: 100%;
+        height: 13px;
+        background: #e5e7eb;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .bar {
+        width: 0;
+        height: 100%;
+        border-radius: 20px;
+        transition: width 0.8s ease;
+    }
+
+    .bar-blue {
+        background: #2563eb;
+    }
+
+    .bar-red {
+        background: #ef4444;
+    }
+
+    /* =========================
+       WINNER
+    ========================= */
+
+    .winner-summary {
+        background: linear-gradient(135deg, #eff6ff, #ffffff);
+        border: 1px solid #bfdbfe;
+        border-left: 6px solid #2563eb;
+        padding: 30px;
+        border-radius: 16px;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .winner-summary h2 {
+        color: #111827;
+        margin-bottom: 12px;
+    }
+
+    .winner-name {
+        font-size: 29px;
+        font-weight: 800;
+        color: #1d4ed8;
+        margin-bottom: 15px;
+    }
+
+    .score-summary {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .score-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        padding: 11px 18px;
+        border-radius: 10px;
+        font-weight: bold;
+    }
+
+    /* =========================
+       CATEGORY WINNERS
+    ========================= */
+
+    .winner-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .winner-item {
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+        border-radius: 11px;
+        padding: 16px;
+    }
+
+    .winner-item strong {
+        color: #111827;
+    }
+
+    /* =========================
+       PERFORMANCE CHART
+    ========================= */
+
+    .chart-legend {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 30px;
+        flex-wrap: wrap;
+        margin-bottom: 28px;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: bold;
+    }
+
+    .legend-box {
+        width: 15px;
+        height: 15px;
+        border-radius: 4px;
+    }
+
+    .legend-blue {
+        background: #2563eb;
+    }
+
+    .legend-red {
+        background: #ef4444;
+    }
+
+    .chart-row {
+        margin-bottom: 23px;
+    }
+
+    .chart-row:last-child {
+        margin-bottom: 0;
+    }
+
+    .chart-heading {
+        font-weight: bold;
+        margin-bottom: 8px;
+        color: #111827;
+    }
+
+    .chart-bars {
+        display: grid;
+        gap: 7px;
+    }
+
+    .chart-line {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .chart-track {
+        flex: 1;
+        height: 22px;
+        background: #e5e7eb;
+        border-radius: 7px;
+        overflow: hidden;
+    }
+
+    .chart-bar {
+        width: 0;
+        height: 100%;
+        border-radius: 7px;
+        transition: width 0.8s ease;
+    }
+
+    .chart-value {
+        width: 65px;
+        text-align: right;
+        font-size: 13px;
+        font-weight: bold;
+        color: #374151;
+    }
+
+    /* =========================
+       TABLE
+    ========================= */
+
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        min-width: 650px;
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        padding: 14px;
+        text-align: center;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    th {
+        background: #111827;
+        color: #ffffff;
+        font-weight: bold;
+    }
+
+    td:first-child {
+        font-weight: bold;
+        color: #374151;
+    }
+
+    tbody tr:hover {
+        background: #f8fafc;
+    }
+
+    /* =========================
+       SAVE
+    ========================= */
+
+    .save-box {
+        text-align: center;
+        margin: 30px 0;
+    }
+
+    .save-button {
+        border: none;
+        background: #111827;
+        color: #ffffff;
+        padding: 14px 28px;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .save-button:hover {
+        background: #2563eb;
+        transform: translateY(-2px);
+    }
+
+    /* =========================
+       INFO
+    ========================= */
+
+    .info-box {
+        background: #eff6ff;
+        border-left: 5px solid #2563eb;
+        padding: 22px;
+        border-radius: 11px;
+        margin-bottom: 30px;
+    }
+
+    .info-box h3 {
+        color: #1e40af;
+        margin-bottom: 10px;
+    }
+
+    .info-box p {
+        color: #374151;
+    }
+
+    /* =========================
+       FOOTER
+    ========================= */
+
+    footer {
+        background: #111827;
+        color: #d1d5db;
+        text-align: center;
+        padding: 30px;
+        margin-top: 50px;
+    }
+
+    footer p {
+        margin: 5px 0;
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+
+    @media (max-width: 900px) {
+        .navbar {
+            justify-content: center;
+        }
+
+        .nav-links {
+            justify-content: center;
+        }
+
+        .select-form {
+            grid-template-columns: 1fr;
+        }
+
+        .players-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .winner-list {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .container {
+            width: 94%;
+            margin: 25px auto;
+        }
+
+        .page-title {
+            font-size: 28px;
+        }
+
+        .page-subtitle {
+            font-size: 14px;
+        }
+
+        .navbar {
+            padding: 14px;
+        }
+
+        .logo {
+            font-size: 19px;
+        }
+
+        .nav-links {
+            gap: 6px;
+        }
+
+        .nav-links a {
+            font-size: 11px;
+        }
+
+        .select-box,
+        .section-box,
+        .player-card {
+            padding: 20px;
+        }
+
+        .winner-name {
+            font-size: 23px;
+        }
+
+        .chart-value {
+            width: 48px;
+            font-size: 12px;
+        }
+    }
+</style>
+```
+
+</head>
+
+<body>
+
+```
+<!-- =========================
+     NAVBAR
+========================= -->
+
+<nav class="navbar">
+
+    <a href="{{ url_for('home') }}" class="logo">
+        🏀 NBA Analytics
+    </a>
+
+    <div class="nav-links">
+
+        <a href="{{ url_for('home') }}">
+            🏠 Home
+        </a>
+
+        <a href="{{ url_for('dashboard') }}">
+            👤 Dashboard
+        </a>
+
+        <a href="{{ url_for('compare') }}" class="active">
+            ⚔️ Compare
+        </a>
+
+        <a href="{{ url_for('prediction') }}">
+            🤖 Prediction
+        </a>
+
+        <a href="{{ url_for('analysis') }}">
+            📊 Analysis
+        </a>
+
+        <a href="{{ url_for('ranking') }}">
+            🏆 Rankings
+        </a>
+
+        <a href="{{ url_for('season_analysis') }}">
+            📅 Season Analysis
+        </a>
+
+        <a href="{{ url_for('live') }}" class="live">
+            🔴 Live NBA
+        </a>
+
+        {% if session.get('user_id') %}
+
+            <a href="{{ url_for('logout') }}">
+                Logout
+            </a>
+
+        {% else %}
+
+            <a href="{{ url_for('login') }}">
+                Login
+            </a>
+
+        {% endif %}
+
+    </div>
+
+</nav>
+
+
+<!-- =========================
+     MAIN
+========================= -->
+
+<main class="container">
+
+    <div class="page-header">
+
+        <h1 class="page-title">
+            ⚔️ NBA Player Comparison
+        </h1>
+
+        <p class="page-subtitle">
+            Compare two NBA players across traditional and advanced performance statistics.
+        </p>
+
+    </div>
+
+
+    <!-- ERROR -->
+
+    {% if error %}
+
+    <div class="error-box">
+        ⚠️ {{ error }}
+    </div>
+
+    {% endif %}
+
+
+    <!-- PLAYER SELECTION -->
+
+    <div class="select-box">
+
+        <h2 class="select-title">
+            🔎 Select Players
+        </h2>
+
+        <form
+            class="select-form"
+            action="{{ url_for('compare') }}"
+            method="GET"
+        >
+
+            <div class="form-group">
+
+                <label for="player1">
+                    Player 1
+                </label>
+
+                <select
+                    id="player1"
+                    name="player1"
+                    required
+                >
+
+                    <option value="">
+                        Select Player 1
+                    </option>
+
+                    {% for player in players %}
+
+                    <option
+                        value="{{ player }}"
+                        {% if player == player1_name %}
+                        selected
+                        {% endif %}
+                    >
+                        {{ player }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="player2">
+                    Player 2
+                </label>
+
+                <select
+                    id="player2"
+                    name="player2"
+                    required
+                >
+
+                    <option value="">
+                        Select Player 2
+                    </option>
+
+                    {% for player in players %}
+
+                    <option
+                        value="{{ player }}"
+                        {% if player == player2_name %}
+                        selected
+                        {% endif %}
+                    >
+                        {{ player }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="compare-button"
+            >
+                ⚔️ Compare
+            </button>
+
+        </form>
+
+    </div>
+
+
+    {% if player1 and player2 %}
+
+    <!-- PLAYER CARDS -->
+
+    <div class="players-grid">
+
+        <div class="player-card player-one">
+
+            <h2>
+                🔵 {{ player1["Player"] }}
+            </h2>
+
+            <div class="stat-line">
+                <span>Points</span>
+                <strong>{{ player1["Points"] }}</strong>
+            </div>
+
+            <div class="stat-line">
+                <span>Rebounds</span>
+                <strong>{{ player1["Rebounds"] }}</strong>
+            </div>
+
+            <div class="stat-line">
+                <span>Assists</span>
+                <strong>{{ player1["Assists"] }}</strong>
+            </div>
+
+            <div class="stat-line">
+                <span>Steals</span>
+                <strong>{{ player1["Steals"] }}</strong>
+            </div>
+
+            <div class="stat-line">
+                <span>Blocks</span>
+                <strong>{{ player1["Blocks"] }}</strong>
+            </div>
+
+            <div class="stat-line">
+                <span>FG%</span>
+                <strong>{{ player1["FG_Percentage"] }}%</strong>
+            </div>
+
+            <div class="stat-line">
+                <span>TS%</span>
+                <strong>{{ player1["TS_Percentage"] }}%</strong>
+            </div>
+
+            <div class="stat-line">
+                <span>PER</span>
+                <strong>{{ player1["PER"] }}</strong>
+            </div>
+
+            <div class="stat-line">
+                <span>Win Shares</span>
+                <strong>{{ player1["Win_Shares"] }}</strong>
+            </div>
+
+        </div>
+
+
+        <div class="player-card player-two">
+
+            <h2>
+                🔴 {{ player2["Player"] }}
+            </h2>
+
+            <div class="stat-line">
+                <span>Points</span>
+                <strong>{{ player2["Points"] }}</strong>
+            </div>
+
+            <div class="stat-line">
+                <span>Rebounds</span>
+                <strong>{{ player2["Rebounds"] }}</strong>
+            </div>
+
+            <div class="stat-line">
+                <span>Assists</span>
+                <strong>{{ player2["Assists"] }}</strong>
+            </div>
+
+            <div class="stat-line">
+                <span>Steals</span>
+                <strong>{{ player2["Steals"] }}</strong>
+            </div>
+
+            <div class="stat-line">
+                <span>Blocks</span>
+                <strong>{{ player2["Blocks"] }}</strong>
+            </div>
+
+            <div class="stat-line">
+                <span>FG%</span>
+                <strong>{{ player2["FG_Percentage"] }}%</strong>
+            </div>
+
+            <div class="stat-line">
+                <span>TS%</span>
+                <strong>{{ player2["TS_Percentage"] }}%</strong>
+            </div>
+
+            <div class="stat-line">
+                <span>PER</span>
+                <strong>{{ player2["PER"] }}</strong>
+            </div>
+
+            <div class="stat-line">
+                <span>Win Shares</span>
+                <strong>{{ player2["Win_Shares"] }}</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- STATISTICAL COMPARISON -->
+
+    <div class="section-box">
+
+        <h2 class="section-title">
+            📊 Statistical Comparison
+        </h2>
+
+
+        <!-- Points -->
+
+        <div class="comparison-row">
+
+            <div class="comparison-header">
+
+                <span>
+                    Points
+                </span>
+
+                <span class="comparison-values">
+                    {{ player1["Points"] }} -
+                    {{ player2["Points"] }}
+                </span>
+
+            </div>
+
+            <div class="dual-bars">
+
+                <div class="bar-label blue-text">
+                    {{ player1["Player"] }}
+                </div>
+
+                <div class="bar-track">
+
+                    <div
+                        id="pointsBar1"
+                        class="bar bar-blue"
+                        data-value="{{ player1['Points'] }}"
+                    ></div>
+
+                </div>
+
+
+                <div class="bar-label red-text">
+                    {{ player2["Player"] }}
+                </div>
+
+                <div class="bar-track">
+
+                    <div
+                        id="pointsBar2"
+                        class="bar bar-red"
+                        data-value="{{ player2['Points'] }}"
+                    ></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Rebounds -->
+
+        <div class="comparison-row">
+
+            <div class="comparison-header">
+
+                <span>
+                    Rebounds
+                </span>
+
+                <span class="comparison-values">
+                    {{ player1["Rebounds"] }} -
+                    {{ player2["Rebounds"] }}
+                </span>
+
+            </div>
+
+            <div class="dual-bars">
+
+                <div class="bar-label blue-text">
+                    {{ player1["Player"] }}
+                </div>
+
+                <div class="bar-track">
+
+                    <div
+                        id="reboundsBar1"
+                        class="bar bar-blue"
+                        data-value="{{ player1['Rebounds'] }}"
+                    ></div>
+
+                </div>
+
+
+                <div class="bar-label red-text">
+                    {{ player2["Player"] }}
+                </div>
+
+                <div class="bar-track">
+
+                    <div
+                        id="reboundsBar2"
+                        class="bar bar-red"
+                        data-value="{{ player2['Rebounds'] }}"
+                    ></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Assists -->
+
+        <div class="comparison-row">
+
+            <div class="comparison-header">
+
+                <span>
+                    Assists
+                </span>
+
+                <span class="comparison-values">
+                    {{ player1["Assists"] }} -
+                    {{ player2["Assists"] }}
+                </span>
+
+            </div>
+
+            <div class="dual-bars">
+
+                <div class="bar-label blue-text">
+                    {{ player1["Player"] }}
+                </div>
+
+                <div class="bar-track">
+
+                    <div
+                        id="assistsBar1"
+                        class="bar bar-blue"
+                        data-value="{{ player1['Assists'] }}"
+                    ></div>
+
+                </div>
+
+
+                <div class="bar-label red-text">
+                    {{ player2["Player"] }}
+                </div>
+
+                <div class="bar-track">
+
+                    <div
+                        id="assistsBar2"
+                        class="bar bar-red"
+                        data-value="{{ player2['Assists'] }}"
+                    ></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- OVERALL WINNER -->
+
+    <div class="winner-summary">
+
+        <h2>
+            🏆 Overall Comparison Result
+        </h2>
+
+        <div class="winner-name">
+            {{ analysis["overall_winner"] }}
+        </div>
+
+        <div class="score-summary">
+
+            <div class="score-card">
+                🔵 {{ player1["Player"] }}:
+                {{ analysis["score1"] }} categories
+            </div>
+
+            <div class="score-card">
+                🔴 {{ player2["Player"] }}:
+                {{ analysis["score2"] }} categories
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- CATEGORY WINNERS -->
+
+    <div class="section-box">
+
+        <h2 class="section-title">
+            🏆 Category Winners
+        </h2>
+
+        <div class="winner-list">
+
+            {% for item in winners %}
+
+            <div class="winner-item">
+
+                <strong>
+                    {{ item["category"] }}
+                </strong>
+
+                :
+                {{ item["winner"] }}
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+
+    <!-- PERFORMANCE CHART -->
+
+    <div class="section-box">
+
+        <h2 class="section-title">
+            📈 Performance Comparison
+        </h2>
+
+        <div class="chart-legend">
+
+            <div class="legend-item">
+
+                <span class="legend-box legend-blue"></span>
+
+                <span>
+                    {{ player1["Player"] }}
+                </span>
+
+            </div>
+
+            <div class="legend-item">
+
+                <span class="legend-box legend-red"></span>
+
+                <span>
+                    {{ player2["Player"] }}
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- Points -->
+
+        <div class="chart-row">
+
+            <div class="chart-heading">
+                Points
+            </div>
+
+            <div class="chart-bars">
+
+                <div class="chart-line">
+
+                    <div class="chart-track">
+
+                        <div
+                            id="chartPoints1"
+                            class="chart-bar bar-blue"
+                            data-value="{{ player1['Points'] }}"
+                        ></div>
+
+                    </div>
+
+                    <div class="chart-value">
+                        {{ player1["Points"] }}
+                    </div>
+
+                </div>
+
+
+                <div class="chart-line">
+
+                    <div class="chart-track">
+
+                        <div
+                            id="chartPoints2"
+                            class="chart-bar bar-red"
+                            data-value="{{ player2['Points'] }}"
+                        ></div>
+
+                    </div>
+
+                    <div class="chart-value">
+                        {{ player2["Points"] }}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Rebounds -->
+
+        <div class="chart-row">
+
+            <div class="chart-heading">
+                Rebounds
+            </div>
+
+            <div class="chart-bars">
+
+                <div class="chart-line">
+
+                    <div class="chart-track">
+
+                        <div
+                            id="chartRebounds1"
+                            class="chart-bar bar-blue"
+                            data-value="{{ player1['Rebounds'] }}"
+                        ></div>
+
+                    </div>
+
+                    <div class="chart-value">
+                        {{ player1["Rebounds"] }}
+                    </div>
+
+                </div>
+
+
+                <div class="chart-line">
+
+                    <div class="chart-track">
+
+                        <div
+                            id="chartRebounds2"
+                            class="chart-bar bar-red"
+                            data-value="{{ player2['Rebounds'] }}"
+                        ></div>
+
+                    </div>
+
+                    <div class="chart-value">
+                        {{ player2["Rebounds"] }}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Assists -->
+
+        <div class="chart-row">
+
+            <div class="chart-heading">
+                Assists
+            </div>
+
+            <div class="chart-bars">
+
+                <div class="chart-line">
+
+                    <div class="chart-track">
+
+                        <div
+                            id="chartAssists1"
+                            class="chart-bar bar-blue"
+                            data-value="{{ player1['Assists'] }}"
+                        ></div>
+
+                    </div>
+
+                    <div class="chart-value">
+                        {{ player1["Assists"] }}
+                    </div>
+
+                </div>
+
+
+                <div class="chart-line">
+
+                    <div class="chart-track">
+
+                        <div
+                            id="chartAssists2"
+                            class="chart-bar bar-red"
+                            data-value="{{ player2['Assists'] }}"
+                        ></div>
+
+                    </div>
+
+                    <div class="chart-value">
+                        {{ player2["Assists"] }}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Steals -->
+
+        <div class="chart-row">
+
+            <div class="chart-heading">
+                Steals
+            </div>
+
+            <div class="chart-bars">
+
+                <div class="chart-line">
+
+                    <div class="chart-track">
+
+                        <div
+                            id="chartSteals1"
+                            class="chart-bar bar-blue"
+                            data-value="{{ player1['Steals'] }}"
+                        ></div>
+
+                    </div>
+
+                    <div class="chart-value">
+                        {{ player1["Steals"] }}
+                    </div>
+
+                </div>
+
+
+                <div class="chart-line">
+
+                    <div class="chart-track">
+
+                        <div
+                            id="chartSteals2"
+                            class="chart-bar bar-red"
+                            data-value="{{ player2['Steals'] }}"
+                        ></div>
+
+                    </div>
+
+                    <div class="chart-value">
+                        {{ player2["Steals"] }}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Blocks -->
+
+        <div class="chart-row">
+
+            <div class="chart-heading">
+                Blocks
+            </div>
+
+            <div class="chart-bars">
+
+                <div class="chart-line">
+
+                    <div class="chart-track">
+
+                        <div
+                            id="chartBlocks1"
+                            class="chart-bar bar-blue"
+                            data-value="{{ player1['Blocks'] }}"
+                        ></div>
+
+                    </div>
+
+                    <div class="chart-value">
+                        {{ player1["Blocks"] }}
+                    </div>
+
+                </div>
+
+
+                <div class="chart-line">
+
+                    <div class="chart-track">
+
+                        <div
+                            id="chartBlocks2"
+                            class="chart-bar bar-red"
+                            data-value="{{ player2['Blocks'] }}"
+                        ></div>
+
+                    </div>
+
+                    <div class="chart-value">
+                        {{ player2["Blocks"] }}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- FG Percentage -->
+
+        <div class="chart-row">
+
+            <div class="chart-heading">
+                FG%
+            </div>
+
+            <div class="chart-bars">
+
+                <div class="chart-line">
+
+                    <div class="chart-track">
+
+                        <div
+                            id="chartFG1"
+                            class="chart-bar bar-blue"
+                            data-value="{{ player1['FG_Percentage'] }}"
+                        ></div>
+
+                    </div>
+
+                    <div class="chart-value">
+                        {{ player1["FG_Percentage"] }}%
+                    </div>
+
+                </div>
+
+
+                <div class="chart-line">
+
+                    <div class="chart-track">
+
+                        <div
+                            id="chartFG2"
+                            class="chart-bar bar-red"
+                            data-value="{{ player2['FG_Percentage'] }}"
+                        ></div>
+
+                    </div>
+
+                    <div class="chart-value">
+                        {{ player2["FG_Percentage"] }}%
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- TS Percentage -->
+
+        <div class="chart-row">
+
+            <div class="chart-heading">
+                TS%
+            </div>
+
+            <div class="chart-bars">
+
+                <div class="chart-line">
+
+                    <div class="chart-track">
+
+                        <div
+                            id="chartTS1"
+                            class="chart-bar bar-blue"
+                            data-value="{{ player1['TS_Percentage'] }}"
+                        ></div>
+
+                    </div>
+
+                    <div class="chart-value">
+                        {{ player1["TS_Percentage"] }}%
+                    </div>
+
+                </div>
+
+
+                <div class="chart-line">
+
+                    <div class="chart-track">
+
+                        <div
+                            id="chartTS2"
+                            class="chart-bar bar-red"
+                            data-value="{{ player2['TS_Percentage'] }}"
+                        ></div>
+
+                    </div>
+
+                    <div class="chart-value">
+                        {{ player2["TS_Percentage"] }}%
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- PER -->
+
+        <div class="chart-row">
+
+            <div class="chart-heading">
+                PER
+            </div>
+
+            <div class="chart-bars">
+
+                <div class="chart-line">
+
+                    <div class="chart-track">
+
+                        <div
+                            id="chartPER1"
+                            class="chart-bar bar-blue"
+                            data-value="{{ player1['PER'] }}"
+                        ></div>
+
+                    </div>
+
+                    <div class="chart-value">
+                        {{ player1["PER"] }}
+                    </div>
+
+                </div>
+
+
+                <div class="chart-line">
+
+                    <div class="chart-track">
+
+                        <div
+                            id="chartPER2"
+                            class="chart-bar bar-red"
+                            data-value="{{ player2['PER'] }}"
+                        ></div>
+
+                    </div>
+
+                    <div class="chart-value">
+                        {{ player2["PER"] }}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Win Shares -->
+
+        <div class="chart-row">
+
+            <div class="chart-heading">
+                Win Shares
+            </div>
+
+            <div class="chart-bars">
+
+                <div class="chart-line">
+
+                    <div class="chart-track">
+
+                        <div
+                            id="chartWinShares1"
+                            class="chart-bar bar-blue"
+                            data-value="{{ player1['Win_Shares'] }}"
+                        ></div>
+
+                    </div>
+
+                    <div class="chart-value">
+                        {{ player1["Win_Shares"] }}
+                    </div>
+
+                </div>
+
+
+                <div class="chart-line">
+
+                    <div class="chart-track">
+
+                        <div
+                            id="chartWinShares2"
+                            class="chart-bar bar-red"
+                            data-value="{{ player2['Win_Shares'] }}"
+                        ></div>
+
+                    </div>
+
+                    <div class="chart-value">
+                        {{ player2["Win_Shares"] }}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- DETAILED STATISTICS -->
+
+    <div class="section-box">
+
+        <h2 class="section-title">
+            📋 Detailed Statistics
+        </h2>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Statistic
+                        </th>
+
+                        <th>
+                            {{ player1["Player"] }}
+                        </th>
+
+                        <th>
+                            {{ player2["Player"] }}
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td>Points</td>
+                        <td>{{ player1["Points"] }}</td>
+                        <td>{{ player2["Points"] }}</td>
+                    </tr>
+
+                    <tr>
+                        <td>Rebounds</td>
+                        <td>{{ player1["Rebounds"] }}</td>
+                        <td>{{ player2["Rebounds"] }}</td>
+                    </tr>
+
+                    <tr>
+                        <td>Assists</td>
+                        <td>{{ player1["Assists"] }}</td>
+                        <td>{{ player2["Assists"] }}</td>
+                    </tr>
+
+                    <tr>
+                        <td>Steals</td>
+                        <td>{{ player1["Steals"] }}</td>
+                        <td>{{ player2["Steals"] }}</td>
+                    </tr>
+
+                    <tr>
+                        <td>Blocks</td>
+                        <td>{{ player1["Blocks"] }}</td>
+                        <td>{{ player2["Blocks"] }}</td>
+                    </tr>
+
+                    <tr>
+                        <td>FG Percentage</td>
+                        <td>{{ player1["FG_Percentage"] }}%</td>
+                        <td>{{ player2["FG_Percentage"] }}%</td>
+                    </tr>
+
+                    <tr>
+                        <td>TS Percentage</td>
+                        <td>{{ player1["TS_Percentage"] }}%</td>
+                        <td>{{ player2["TS_Percentage"] }}%</td>
+                    </tr>
+
+                    <tr>
+                        <td>PER</td>
+                        <td>{{ player1["PER"] }}</td>
+                        <td>{{ player2["PER"] }}</td>
+                    </tr>
+
+                    <tr>
+                        <td>Win Shares</td>
+                        <td>{{ player1["Win_Shares"] }}</td>
+                        <td>{{ player2["Win_Shares"] }}</td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- SAVE COMPARISON -->
+
+    {% if session.get('user_id') %}
+
+    <div class="save-box">
+
+        <form
+            action="{{ url_for('save_comparison') }}"
+            method="POST"
+        >
+
+            <input
+                type="hidden"
+                name="player1"
+                value="{{ player1['Player'] }}"
+            >
+
+            <input
+                type="hidden"
+                name="player2"
+                value="{{ player2['Player'] }}"
+            >
+
+            <input
+                type="hidden"
+                name="winner"
+                value="{{ analysis['overall_winner'] }}"
+            >
+
+            <button
+                type="submit"
+                class="save-button"
+            >
+                💾 Save Comparison
+            </button>
+
+        </form>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- INFO -->
+
+    <div class="info-box">
+
+        <h3>
+            💡 About This Comparison
+        </h3>
+
+        <p>
+            This comparison evaluates NBA players using traditional
+            and advanced performance statistics including Points,
+            Rebounds, Assists, Steals, Blocks, Field Goal Percentage,
+            True Shooting Percentage, Player Efficiency Rating and
+            Win Shares.
+        </p>
+
+    </div>
+
+    {% endif %}
+
+</main>
+
+
+<!-- FOOTER -->
+
+<footer>
+
+    <p>
+        🏀 NBA Player Performance Analytics
+    </p>
+
+    <p>
+        Data-driven basketball analysis platform
+    </p>
+
+</footer>
+
+
+<!-- JAVASCRIPT -->
+
+{% if player1 and player2 %}
+
+<script>
+
+    function setBarWidth(firstId, secondId) {
+
+        const firstBar =
+            document.getElementById(firstId);
+
+        const secondBar =
+            document.getElementById(secondId);
+
+        if (!firstBar || !secondBar) {
+            return;
+        }
+
+        const firstValue =
+            Number(firstBar.dataset.value);
+
+        const secondValue =
+            Number(secondBar.dataset.value);
+
+        const maximum =
+            Math.max(firstValue, secondValue);
+
+        if (maximum <= 0) {
+
+            firstBar.style.width = "0%";
+            secondBar.style.width = "0%";
+
+            return;
+        }
+
+        firstBar.style.width =
+            ((firstValue / maximum) * 100) + "%";
+
+        secondBar.style.width =
+            ((secondValue / maximum) * 100) + "%";
+    }
+
+
+    /* TOP COMPARISON BARS */
+
+    setBarWidth(
+        "pointsBar1",
+        "pointsBar2"
+    );
+
+    setBarWidth(
+        "reboundsBar1",
+        "reboundsBar2"
+    );
+
+    setBarWidth(
+        "assistsBar1",
+        "assistsBar2"
+    );
+
+
+    /* PERFORMANCE CHART */
+
+    setBarWidth(
+        "chartPoints1",
+        "chartPoints2"
+    );
+
+    setBarWidth(
+        "chartRebounds1",
+        "chartRebounds2"
+    );
+
+    setBarWidth(
+        "chartAssists1",
+        "chartAssists2"
+    );
+
+    setBarWidth(
+        "chartSteals1",
+        "chartSteals2"
+    );
+
+    setBarWidth(
+        "chartBlocks1",
+        "chartBlocks2"
+    );
+
+    setBarWidth(
+        "chartFG1",
+        "chartFG2"
+    );
+
+    setBarWidth(
+        "chartTS1",
+        "chartTS2"
+    );
+
+    setBarWidth(
+        "chartPER1",
+        "chartPER2"
+    );
+
+    setBarWidth(
+        "chartWinShares1",
+        "chartWinShares2"
+    );
+
+</script>
+
+{% endif %}
+```
+
+</body>
+</html>

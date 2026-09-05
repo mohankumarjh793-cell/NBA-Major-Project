@@ -1,0 +1,531 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+          content="Create an account for NBA Player Performance Analytics.">
+
+    <title>NBA Analytics | Register</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background:
+                radial-gradient(circle at top right, #dbeafe 0%, transparent 35%),
+                linear-gradient(135deg, #f8fafc, #eef4ff);
+            color: #172033;
+            min-height: 100vh;
+        }
+
+        .auth-navbar {
+            min-height: 72px;
+            padding: 0 5%;
+            background: rgba(15, 23, 42, 0.97);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.15);
+        }
+
+        .auth-logo {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 21px;
+            font-weight: 800;
+        }
+
+        .auth-home {
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 10px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.2s ease;
+        }
+
+        .auth-home:hover {
+            background: #2563eb;
+            border-color: #2563eb;
+            color: #ffffff;
+        }
+
+        .register-page {
+            min-height: calc(100vh - 72px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 42px 20px 28px;
+        }
+
+        .register-wrapper {
+            width: 100%;
+            max-width: 470px;
+        }
+
+        .register-card {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.97);
+            border: 1px solid #e2e8f0;
+            border-radius: 22px;
+            padding: 36px;
+            box-shadow:
+                0 20px 55px rgba(15, 23, 42, 0.12),
+                0 4px 12px rgba(15, 23, 42, 0.04);
+        }
+
+        .register-icon {
+            width: 78px;
+            height: 78px;
+            margin: 0 auto 19px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 39px;
+            box-shadow: inset 0 0 0 1px #bfdbfe;
+        }
+
+        .register-header {
+            text-align: center;
+            margin-bottom: 26px;
+        }
+
+        .register-header h1 {
+            margin: 0 0 9px;
+            color: #0f172a;
+            font-size: 29px;
+            letter-spacing: -0.5px;
+        }
+
+        .register-header p {
+            margin: 0;
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .flash-message {
+            padding: 13px 15px;
+            margin-bottom: 19px;
+            border-radius: 10px;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .form-group {
+            margin-bottom: 17px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #334155;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            pointer-events: none;
+        }
+
+        .form-group input {
+            width: 100%;
+            height: 49px;
+            padding: 0 14px 0 43px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            background: #ffffff;
+            color: #172033;
+            font-size: 15px;
+            outline: none;
+            transition: 0.2s ease;
+        }
+
+        .form-group input::placeholder {
+            color: #94a3b8;
+        }
+
+        .form-group input:hover {
+            border-color: #94a3b8;
+        }
+
+        .form-group input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.10);
+        }
+
+        .password-hint {
+            margin-top: 7px;
+            color: #94a3b8;
+            font-size: 11px;
+        }
+
+        .register-btn {
+            width: 100%;
+            height: 51px;
+            margin-top: 5px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 8px 18px rgba(37, 99, 235, 0.22);
+            transition: 0.2s ease;
+        }
+
+        .register-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 11px 23px rgba(37, 99, 235, 0.28);
+        }
+
+        .register-btn:active {
+            transform: translateY(0);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 24px 0 19px;
+            color: #94a3b8;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        .login-box {
+            padding: 15px;
+            text-align: center;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 11px;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .login-box a {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 800;
+        }
+
+        .login-box a:hover {
+            text-decoration: underline;
+        }
+
+        .account-note {
+            margin-top: 18px;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .auth-footer {
+            text-align: center;
+            color: #64748b;
+            font-size: 12px;
+            padding: 0 20px 24px;
+        }
+
+        @media (max-width: 520px) {
+
+            .auth-navbar {
+                padding: 0 18px;
+            }
+
+            .auth-logo {
+                font-size: 18px;
+            }
+
+            .auth-home {
+                padding: 8px 11px;
+                font-size: 13px;
+            }
+
+            .register-page {
+                padding: 28px 15px 20px;
+            }
+
+            .register-card {
+                padding: 28px 21px;
+                border-radius: 18px;
+            }
+
+            .register-header h1 {
+                font-size: 25px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<nav class="auth-navbar">
+
+    <a href="{{ url_for('home') }}"
+       class="auth-logo">
+
+        🏀 NBA Analytics
+
+    </a>
+
+    <a href="{{ url_for('home') }}"
+       class="auth-home">
+
+        ← Home
+
+    </a>
+
+</nav>
+
+
+<main class="register-page">
+
+    <div class="register-wrapper">
+
+        <section class="register-card">
+
+            <div class="register-icon">
+                🏀
+            </div>
+
+
+            <div class="register-header">
+
+                <h1>
+                    Create Account
+                </h1>
+
+                <p>
+                    Join NBA Analytics and explore player
+                    performance, rankings and comparisons.
+                </p>
+
+            </div>
+
+
+            {% with messages = get_flashed_messages() %}
+
+                {% if messages %}
+
+                    {% for message in messages %}
+
+                        <div class="flash-message">
+                            {{ message }}
+                        </div>
+
+                    {% endfor %}
+
+                {% endif %}
+
+            {% endwith %}
+
+
+            <form method="POST">
+
+
+                <div class="form-group">
+
+                    <label for="username">
+                        Username
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            👤
+                        </span>
+
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            placeholder="Choose a username"
+                            autocomplete="username"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="email">
+                        Email
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            ✉️
+                        </span>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="Enter your email"
+                            autocomplete="email"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            🔒
+                        </span>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Create a password"
+                            autocomplete="new-password"
+                            required
+                        >
+
+                    </div>
+
+                    <div class="password-hint">
+                        Use a strong password for better account security.
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="confirm_password">
+                        Confirm Password
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            🔐
+                        </span>
+
+                        <input
+                            type="password"
+                            id="confirm_password"
+                            name="confirm_password"
+                            placeholder="Re-enter your password"
+                            autocomplete="new-password"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <button type="submit"
+                        class="register-btn">
+
+                    🚀 Create Account
+
+                </button>
+
+
+            </form>
+
+
+            <div class="divider">
+                NBA PLAYER ANALYTICS
+            </div>
+
+
+            <div class="login-box">
+
+                Already have an account?
+
+                <a href="{{ url_for('login') }}">
+                    Sign In
+                </a>
+
+            </div>
+
+
+            <div class="account-note">
+
+                🔒 Your account is handled through the
+                application's authentication system.
+
+            </div>
+
+        </section>
+
+    </div>
+
+</main>
+
+
+<footer class="auth-footer">
+
+    🏀 NBA Player Performance Analytics Platform
+
+</footer>
+
+
+</body>
+
+</html>
+```

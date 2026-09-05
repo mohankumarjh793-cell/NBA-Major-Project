@@ -1,0 +1,1184 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+          content="NBA Analytics dashboard for player performance, comparisons, rankings, predictions and season analysis.">
+
+    <title>NBA Analytics | Dashboard</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background:
+                radial-gradient(circle at top right, #e0edff 0%, transparent 28%),
+                #f4f7fb;
+            color: #172033;
+            min-height: 100vh;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        .navbar {
+            background: rgba(15, 23, 42, 0.98);
+            min-height: 72px;
+            padding: 0 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+            box-shadow: 0 4px 22px rgba(15, 23, 42, 0.14);
+        }
+
+        .logo {
+            color: white;
+            font-size: 21px;
+            font-weight: 800;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 9px 11px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: 0.2s ease;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: #2563eb;
+            color: white;
+        }
+
+        .nav-links .live {
+            background: #dc2626;
+            color: white;
+        }
+
+        .nav-links .live:hover {
+            background: #b91c1c;
+        }
+
+        .nav-links .logout {
+            border: 1px solid rgba(255,255,255,0.15);
+            margin-left: 3px;
+        }
+
+        /* ================= MAIN ================= */
+
+        .container {
+            width: 90%;
+            max-width: 1220px;
+            margin: auto;
+        }
+
+        .dashboard-header {
+            padding: 42px 0 24px;
+        }
+
+        .dashboard-label {
+            display: inline-block;
+            margin-bottom: 10px;
+            padding: 6px 11px;
+            border-radius: 20px;
+            background: #dbeafe;
+            color: #1d4ed8;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .dashboard-header h1 {
+            color: #0f172a;
+            font-size: 34px;
+            margin-bottom: 9px;
+            letter-spacing: -0.6px;
+        }
+
+        .dashboard-header p {
+            color: #64748b;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* ================= WELCOME ================= */
+
+        .welcome {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #1d4ed8, #2563eb);
+            color: white;
+            padding: 30px;
+            border-radius: 18px;
+            margin-bottom: 27px;
+            box-shadow: 0 12px 30px rgba(37, 99, 235, 0.20);
+        }
+
+        .welcome::after {
+            content: "🏀";
+            position: absolute;
+            right: 35px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 72px;
+            opacity: 0.13;
+        }
+
+        .welcome h2 {
+            font-size: 23px;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .welcome p {
+            color: #dbeafe;
+            font-size: 14px;
+            line-height: 1.6;
+            max-width: 700px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ================= STATS ================= */
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 35px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 21px;
+            border-radius: 15px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 5px 18px rgba(15, 23, 42, 0.06);
+            transition: 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.09);
+        }
+
+        .stat-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 13px;
+        }
+
+        .stat-icon {
+            width: 43px;
+            height: 43px;
+            border-radius: 11px;
+            background: #eff6ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+        }
+
+        .stat-badge {
+            color: #16a34a;
+            background: #f0fdf4;
+            border-radius: 20px;
+            padding: 4px 8px;
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .stat-title {
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .stat-value {
+            color: #0f172a;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        /* ================= SECTION ================= */
+
+        .section-heading {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 15px;
+            margin: 38px 0 17px;
+        }
+
+        .section-heading h2 {
+            color: #0f172a;
+            font-size: 22px;
+        }
+
+        .section-heading p {
+            margin-top: 5px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        /* ================= FEATURE GRID ================= */
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 17px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 23px;
+            border-radius: 15px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 5px 18px rgba(15, 23, 42, 0.055);
+            transition: 0.2s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            border-color: #bfdbfe;
+            box-shadow: 0 12px 28px rgba(15, 23, 42, 0.10);
+        }
+
+        .feature-icon {
+            width: 49px;
+            height: 49px;
+            border-radius: 13px;
+            background: #eff6ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .feature-card h3 {
+            color: #0f172a;
+            font-size: 17px;
+            margin-bottom: 8px;
+        }
+
+        .feature-card p {
+            color: #64748b;
+            line-height: 1.55;
+            font-size: 13px;
+            min-height: 61px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            margin-top: 15px;
+            padding: 9px 14px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 800;
+            transition: 0.2s ease;
+        }
+
+        .btn:hover {
+            background: #1d4ed8;
+            transform: translateX(2px);
+        }
+
+        /* ================= SAVED COMPARISONS ================= */
+
+        .saved-section {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            margin-top: 36px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 5px 18px rgba(15, 23, 42, 0.055);
+        }
+
+        .saved-header {
+            margin-bottom: 20px;
+        }
+
+        .saved-header h2 {
+            color: #0f172a;
+            font-size: 20px;
+            margin-bottom: 6px;
+        }
+
+        .saved-description {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .comparison-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .comparison-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 15px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 11px;
+            transition: 0.2s ease;
+        }
+
+        .comparison-item:hover {
+            background: #f1f5f9;
+        }
+
+        .comparison-info {
+            flex: 1;
+        }
+
+        .comparison-players {
+            color: #0f172a;
+            font-size: 14px;
+            font-weight: 800;
+            margin-bottom: 7px;
+        }
+
+        .vs {
+            color: #94a3b8;
+            margin: 0 5px;
+            font-size: 11px;
+        }
+
+        .comparison-winner {
+            color: #15803d;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .comparison-date {
+            color: #94a3b8;
+            font-size: 11px;
+            margin-top: 5px;
+        }
+
+        .delete-form {
+            margin: 0;
+        }
+
+        .delete-btn {
+            border: none;
+            background: #fee2e2;
+            color: #b91c1c;
+            padding: 9px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 800;
+            transition: 0.2s ease;
+        }
+
+        .delete-btn:hover {
+            background: #dc2626;
+            color: white;
+        }
+
+        .no-saved {
+            text-align: center;
+            padding: 30px 15px;
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.7;
+            background: #f8fafc;
+            border-radius: 11px;
+        }
+
+        /* ================= QUICK ACCESS ================= */
+
+        .quick-section {
+            margin: 35px 0;
+            padding: 25px;
+            border-radius: 16px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 5px 18px rgba(15, 23, 42, 0.055);
+        }
+
+        .quick-section h2 {
+            color: #0f172a;
+            font-size: 20px;
+            margin-bottom: 6px;
+        }
+
+        .quick-section > p {
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 17px;
+        }
+
+        .quick-links {
+            display: flex;
+            gap: 9px;
+            flex-wrap: wrap;
+        }
+
+        .quick-link {
+            text-decoration: none;
+            padding: 10px 14px;
+            border-radius: 8px;
+            background: #eff6ff;
+            color: #1d4ed8;
+            font-weight: 800;
+            font-size: 12px;
+            transition: 0.2s ease;
+        }
+
+        .quick-link:hover {
+            background: #dbeafe;
+            transform: translateY(-1px);
+        }
+
+        .quick-live {
+            background: #fef2f2;
+            color: #b91c1c;
+        }
+
+        .quick-live:hover {
+            background: #fee2e2;
+        }
+
+        /* ================= FOOTER ================= */
+
+        footer {
+            margin-top: 45px;
+            background: #0f172a;
+            color: #94a3b8;
+            text-align: center;
+            padding: 25px 20px;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        footer strong {
+            color: #e2e8f0;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 1050px) {
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .feature-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 760px) {
+
+            .navbar {
+                justify-content: center;
+                padding: 13px 18px;
+            }
+
+            .nav-links {
+                justify-content: center;
+            }
+
+            .container {
+                width: 92%;
+            }
+
+            .dashboard-header {
+                padding-top: 30px;
+            }
+
+            .dashboard-header h1 {
+                font-size: 27px;
+            }
+
+            .welcome {
+                padding: 24px;
+            }
+
+            .welcome::after {
+                display: none;
+            }
+
+        }
+
+        @media (max-width: 600px) {
+
+            .stats-grid,
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-heading {
+                display: block;
+            }
+
+            .feature-card p {
+                min-height: auto;
+            }
+
+            .comparison-item {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .delete-form {
+                width: 100%;
+            }
+
+            .delete-btn {
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================= NAVBAR ================= -->
+
+<nav class="navbar">
+
+    <a href="{{ url_for('home') }}"
+       class="logo">
+
+        🏀 NBA Analytics
+
+    </a>
+
+
+    <div class="nav-links">
+
+        <a href="{{ url_for('home') }}">
+            🏠 Home
+        </a>
+
+        <a href="{{ url_for('dashboard') }}"
+           class="active">
+            👤 Dashboard
+        </a>
+
+        <a href="{{ url_for('compare') }}">
+            ⚔️ Compare
+        </a>
+
+        <a href="{{ url_for('analysis') }}">
+            📊 Analysis
+        </a>
+
+        <a href="{{ url_for('prediction') }}">
+            🤖 Prediction
+        </a>
+
+        <a href="{{ url_for('ranking') }}">
+            🏆 Rankings
+        </a>
+
+        <a href="{{ url_for('season_analysis') }}">
+            📅 Seasons
+        </a>
+
+        <a href="{{ url_for('live') }}"
+           class="live">
+            🔴 Live
+        </a>
+
+        <a href="{{ url_for('logout') }}"
+           class="logout">
+            Logout
+        </a>
+
+    </div>
+
+</nav>
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="container">
+
+
+    <!-- ================= HEADER ================= -->
+
+    <section class="dashboard-header">
+
+        <span class="dashboard-label">
+            NBA PERFORMANCE PLATFORM
+        </span>
+
+        <h1>
+            📊 Analytics Dashboard
+        </h1>
+
+        <p>
+            Your central hub for NBA player statistics,
+            comparisons, machine learning predictions,
+            rankings and season analysis.
+        </p>
+
+    </section>
+
+
+    <!-- ================= WELCOME ================= -->
+
+    <section class="welcome">
+
+        <h2>
+            👋 Welcome, {{ user["username"] }}!
+        </h2>
+
+        <p>
+            Explore NBA performance data, compare players,
+            discover rankings and generate data-driven insights
+            from the analytics platform.
+        </p>
+
+    </section>
+
+
+    <!-- ================= STATS ================= -->
+
+    <section class="stats-grid">
+
+
+        <div class="stat-card">
+
+            <div class="stat-top">
+
+                <div class="stat-icon">
+                    👥
+                </div>
+
+                <span class="stat-badge">
+                    READY
+                </span>
+
+            </div>
+
+            <div class="stat-title">
+                Dataset
+            </div>
+
+            <div class="stat-value">
+                NBA Players
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-top">
+
+                <div class="stat-icon">
+                    ⚔️
+                </div>
+
+                <span class="stat-badge">
+                    ACTIVE
+                </span>
+
+            </div>
+
+            <div class="stat-title">
+                Comparison
+            </div>
+
+            <div class="stat-value">
+                Available
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-top">
+
+                <div class="stat-icon">
+                    🤖
+                </div>
+
+                <span class="stat-badge">
+                    ML
+                </span>
+
+            </div>
+
+            <div class="stat-title">
+                Prediction Model
+            </div>
+
+            <div class="stat-value">
+                Random Forest
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-top">
+
+                <div class="stat-icon">
+                    📡
+                </div>
+
+                <span class="stat-badge">
+                    DATA
+                </span>
+
+            </div>
+
+            <div class="stat-title">
+                NBA Data
+            </div>
+
+            <div class="stat-value">
+                Live API
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- ================= FEATURES ================= -->
+
+    <div class="section-heading">
+
+        <div>
+
+            <h2>
+                🚀 Explore Analytics
+            </h2>
+
+            <p>
+                Choose a tool to explore NBA performance data.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <section class="feature-grid">
+
+
+        <!-- SEARCH -->
+
+        <article class="feature-card">
+
+            <div class="feature-icon">
+                🔎
+            </div>
+
+            <h3>
+                Player Search
+            </h3>
+
+            <p>
+                Search for NBA players and view their
+                available performance statistics.
+            </p>
+
+            <a href="{{ url_for('home') }}"
+               class="btn">
+                Search Players →
+            </a>
+
+        </article>
+
+
+        <!-- COMPARISON -->
+
+        <article class="feature-card">
+
+            <div class="feature-icon">
+                ⚔️
+            </div>
+
+            <h3>
+                Player Comparison
+            </h3>
+
+            <p>
+                Compare two NBA players across multiple
+                performance metrics and identify the stronger performer.
+            </p>
+
+            <a href="{{ url_for('compare') }}"
+               class="btn">
+                Compare Players →
+            </a>
+
+        </article>
+
+
+        <!-- PREDICTION -->
+
+        <article class="feature-card">
+
+            <div class="feature-icon">
+                🤖
+            </div>
+
+            <h3>
+                ML Prediction
+            </h3>
+
+            <p>
+                Use the Random Forest model to estimate
+                player Win Shares from performance metrics.
+            </p>
+
+            <a href="{{ url_for('prediction') }}"
+               class="btn">
+                Predict Performance →
+            </a>
+
+        </article>
+
+
+        <!-- ANALYSIS -->
+
+        <article class="feature-card">
+
+            <div class="feature-icon">
+                📈
+            </div>
+
+            <h3>
+                Performance Analysis
+            </h3>
+
+            <p>
+                Explore player statistics and visualize
+                important performance metrics through charts.
+            </p>
+
+            <a href="{{ url_for('analysis') }}"
+               class="btn">
+                View Analysis →
+            </a>
+
+        </article>
+
+
+        <!-- RANKINGS -->
+
+        <article class="feature-card">
+
+            <div class="feature-icon">
+                🏆
+            </div>
+
+            <h3>
+                Performance Rankings
+            </h3>
+
+            <p>
+                Discover player rankings using a weighted
+                performance score across selected metrics.
+            </p>
+
+            <a href="{{ url_for('ranking') }}"
+               class="btn">
+                View Rankings →
+            </a>
+
+        </article>
+
+
+        <!-- SEASON ANALYSIS -->
+
+        <article class="feature-card">
+
+            <div class="feature-icon">
+                📅
+            </div>
+
+            <h3>
+                Season Analysis
+            </h3>
+
+            <p>
+                Explore player performance across different
+                NBA seasons and compare yearly statistics.
+            </p>
+
+            <a href="{{ url_for('season_analysis') }}"
+               class="btn">
+                Explore Seasons →
+            </a>
+
+        </article>
+
+
+        <!-- LIVE NBA -->
+
+        <article class="feature-card">
+
+            <div class="feature-icon">
+                🔴
+            </div>
+
+            <h3>
+                Live NBA
+            </h3>
+
+            <p>
+                View live NBA game information when
+                real-time game data is available.
+            </p>
+
+            <a href="{{ url_for('live') }}"
+               class="btn">
+                View Live NBA →
+            </a>
+
+        </article>
+
+
+    </section>
+
+
+    <!-- ================= SAVED COMPARISONS ================= -->
+
+    <section class="saved-section">
+
+        <div class="saved-header">
+
+            <h2>
+                💾 Saved Comparisons
+            </h2>
+
+            <p class="saved-description">
+                Review the player comparisons you previously saved.
+            </p>
+
+        </div>
+
+
+        {% if saved_comparisons %}
+
+            <div class="comparison-list">
+
+                {% for comparison in saved_comparisons %}
+
+                    <div class="comparison-item">
+
+                        <div class="comparison-info">
+
+                            <div class="comparison-players">
+
+                                {{ comparison["player1"] }}
+
+                                <span class="vs">
+                                    VS
+                                </span>
+
+                                {{ comparison["player2"] }}
+
+                            </div>
+
+
+                            <div class="comparison-winner">
+
+                                🏆 Winner:
+                                {{ comparison["winner"] }}
+
+                            </div>
+
+
+                            <div class="comparison-date">
+
+                                Saved:
+                                {{ comparison["created_at"] }}
+
+                            </div>
+
+                        </div>
+
+
+                        <form
+                            method="POST"
+                            action="{{ url_for(
+                                'delete_comparison',
+                                comparison_id=comparison['id']
+                            ) }}"
+                            class="delete-form"
+                        >
+
+                            <button
+                                type="submit"
+                                class="delete-btn"
+                                onclick="return confirm('Delete this saved comparison?');"
+                            >
+
+                                🗑 Delete
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="no-saved">
+
+                📭
+
+                <br>
+
+                <strong>
+                    No saved comparisons yet.
+                </strong>
+
+                <br>
+
+                Compare two players and save your first
+                analysis to see it here.
+
+            </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- ================= QUICK ACCESS ================= -->
+
+    <section class="quick-section">
+
+        <h2>
+            ⚡ Quick Access
+        </h2>
+
+        <p>
+            Jump directly to the most important NBA Analytics tools.
+        </p>
+
+
+        <div class="quick-links">
+
+            <a href="{{ url_for('home') }}"
+               class="quick-link">
+                🏠 Home
+            </a>
+
+            <a href="{{ url_for('compare') }}"
+               class="quick-link">
+                ⚔️ Compare
+            </a>
+
+            <a href="{{ url_for('analysis') }}"
+               class="quick-link">
+                📈 Analysis
+            </a>
+
+            <a href="{{ url_for('prediction') }}"
+               class="quick-link">
+                🤖 Prediction
+            </a>
+
+            <a href="{{ url_for('ranking') }}"
+               class="quick-link">
+                🏆 Rankings
+            </a>
+
+            <a href="{{ url_for('season_analysis') }}"
+               class="quick-link">
+                📅 Seasons
+            </a>
+
+            <a href="{{ url_for('live') }}"
+               class="quick-link quick-live">
+                🔴 Live NBA
+            </a>
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+    <strong>
+        🏀 NBA Player Performance Analytics
+    </strong>
+
+    <br>
+
+    Data Analysis • Machine Learning • Player Comparison •
+    Rankings • Season Analysis
+
+    <br>
+
+    Python • Flask • Pandas • Scikit-Learn
+
+</footer>
+
+
+</body>
+
+</html>
+```

@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+```
+<title>NBA Player Rankings</title>
+
+<style>
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f5f7fb;
+        color: #172033;
+    }
+
+    /* NAVBAR */
+
+    nav {
+        background: #0b1220;
+        padding: 15px 5%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+    }
+
+    .logo {
+        color: white;
+        text-decoration: none;
+        font-size: 21px;
+        font-weight: bold;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 7px;
+        flex-wrap: wrap;
+    }
+
+    .nav-links a {
+        color: #cbd5e1;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        padding: 9px 12px;
+        border-radius: 8px;
+    }
+
+    .nav-links a:hover {
+        color: white;
+        background: #1e293b;
+    }
+
+    /* HERO */
+
+    .hero {
+        background: #111827;
+        color: white;
+        text-align: center;
+        padding: 55px 6%;
+    }
+
+    .hero-badge {
+        display: inline-block;
+        padding: 7px 14px;
+        border-radius: 20px;
+        background: #1e293b;
+        color: #cbd5e1;
+        font-size: 12px;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+
+    .hero h1 {
+        margin: 0 0 14px;
+        font-size: 40px;
+    }
+
+    .hero p {
+        max-width: 760px;
+        margin: auto;
+        color: #cbd5e1;
+        line-height: 1.7;
+        font-size: 15px;
+    }
+
+    /* CONTAINER */
+
+    .container {
+        width: 92%;
+        max-width: 1350px;
+        margin: 35px auto 50px;
+    }
+
+    /* TOP PLAYER */
+
+    .top-card {
+        background: #111827;
+        color: white;
+        border-radius: 20px;
+        padding: 30px;
+        margin-bottom: 35px;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 25px;
+        flex-wrap: wrap;
+
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .top-badge {
+        display: inline-block;
+        background: #1e293b;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: bold;
+        margin-bottom: 12px;
+    }
+
+    .top-card h2 {
+        margin: 0 0 8px;
+        font-size: 26px;
+    }
+
+    .top-card p {
+        margin: 0;
+        color: #cbd5e1;
+    }
+
+    .score-box {
+        text-align: center;
+        min-width: 160px;
+    }
+
+    .score {
+        font-size: 46px;
+        font-weight: 900;
+    }
+
+    .score-label {
+        color: #cbd5e1;
+        font-size: 12px;
+        margin-top: 5px;
+    }
+
+    /* TABLE CARD */
+
+    .table-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    }
+
+    .table-header {
+        padding: 22px 24px;
+        border-bottom: 1px solid #edf0f5;
+    }
+
+    .table-header h2 {
+        margin: 0 0 6px;
+        font-size: 20px;
+    }
+
+    .table-header span {
+        color: #667085;
+        font-size: 13px;
+    }
+
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        min-width: 1100px;
+        border-collapse: collapse;
+    }
+
+    th {
+        background: #f8fafc;
+        padding: 15px 16px;
+        text-align: left;
+        font-size: 12px;
+        color: #475467;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    td {
+        padding: 15px 16px;
+        border-top: 1px solid #edf0f5;
+        white-space: nowrap;
+        font-size: 14px;
+    }
+
+    tbody tr:hover {
+        background: #f8fafc;
+    }
+
+    /* RANK */
+
+    .rank {
+        font-size: 17px;
+        font-weight: bold;
+    }
+
+    /* PLAYER */
+
+    .player-cell {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .player-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: #eef2f7;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .player-name {
+        color: #111827;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    .player-name:hover {
+        text-decoration: underline;
+    }
+
+    /* PERFORMANCE */
+
+    .performance-cell {
+        min-width: 150px;
+    }
+
+    .performance-score {
+        font-size: 17px;
+        font-weight: bold;
+    }
+
+    .score-label-small {
+        color: #667085;
+        font-size: 12px;
+    }
+
+    .score-bar {
+        width: 100px;
+        height: 5px;
+        margin-top: 7px;
+        background: #e5e7eb;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .score-bar-fill {
+        width: 70%;
+        height: 100%;
+        background: #111827;
+        border-radius: 10px;
+    }
+
+    /* STATS */
+
+    .stat-value {
+        font-weight: 600;
+        color: #344054;
+    }
+
+    .percentage {
+        font-weight: bold;
+    }
+
+    /* INFO BOX */
+
+    .info-box {
+        background: white;
+        margin-top: 30px;
+        padding: 28px;
+        border-radius: 20px;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+    }
+
+    .info-box h3 {
+        margin: 0 0 10px;
+        font-size: 20px;
+    }
+
+    .info-box p {
+        color: #667085;
+        line-height: 1.7;
+        font-size: 14px;
+    }
+
+    /* WEIGHTS */
+
+    .weights {
+        display: grid;
+        grid-template-columns: repeat(
+            auto-fit,
+            minmax(150px, 1fr)
+        );
+        gap: 12px;
+        margin-top: 22px;
+    }
+
+    .weight {
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 15px;
+    }
+
+    .weight strong {
+        display: block;
+        margin-bottom: 6px;
+        color: #344054;
+    }
+
+    .weight-value {
+        font-size: 20px;
+        font-weight: bold;
+        color: #111827;
+    }
+
+    /* FOOTER */
+
+    footer {
+        margin-top: 50px;
+        padding: 28px 20px;
+        text-align: center;
+        background: #0b1220;
+        color: #94a3b8;
+        font-size: 13px;
+        line-height: 1.7;
+    }
+
+    footer strong {
+        color: white;
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 700px) {
+
+        nav {
+            justify-content: center;
+        }
+
+        .logo {
+            width: 100%;
+            text-align: center;
+        }
+
+        .nav-links {
+            justify-content: center;
+        }
+
+        .nav-links a {
+            font-size: 12px;
+            padding: 7px 8px;
+        }
+
+        .hero {
+            padding: 42px 5%;
+        }
+
+        .hero h1 {
+            font-size: 29px;
+        }
+
+        .hero p {
+            font-size: 14px;
+        }
+
+        .container {
+            width: 95%;
+        }
+
+        .top-card {
+            padding: 24px;
+        }
+
+        .top-card h2 {
+            font-size: 22px;
+        }
+
+        .score {
+            font-size: 38px;
+        }
+
+        .score-box {
+            width: 100%;
+            text-align: left;
+        }
+
+        .info-box {
+            padding: 22px;
+        }
+    }
+
+</style>
+```
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<nav>
+
+```
+<a
+    href="{{ url_for('home') }}"
+    class="logo"
+>
+    🏀 NBA Analytics
+</a>
+
+<div class="nav-links">
+
+    <a href="{{ url_for('dashboard') }}">
+        Dashboard
+    </a>
+
+    <a href="{{ url_for('compare') }}">
+        Compare
+    </a>
+
+    <a href="{{ url_for('prediction') }}">
+        Prediction
+    </a>
+
+    <a href="{{ url_for('analysis') }}">
+        Analysis
+    </a>
+
+    <a href="{{ url_for('ranking') }}">
+        Rankings
+    </a>
+
+    <a href="{{ url_for('live') }}">
+        🔴 Live
+    </a>
+
+</div>
+```
+
+</nav>
+
+<!-- HERO -->
+
+<section class="hero">
+
+```
+<div class="hero-badge">
+    DATA-DRIVEN PLAYER EVALUATION
+</div>
+
+<h1>
+    🏆 NBA Player Performance Rankings
+</h1>
+
+<p>
+    Explore player rankings generated from multiple
+    performance metrics including scoring, rebounding,
+    playmaking, defense, shooting efficiency, PER and
+    Win Shares.
+</p>
+```
+
+</section>
+
+<!-- MAIN -->
+
+<div class="container">
+
+{% if top_player %}
+
+```
+<!-- TOP PLAYER -->
+
+<div class="top-card">
+
+    <div>
+
+        <div class="top-badge">
+            🥇 TOP RANKED PLAYER
+        </div>
+
+        <h2>
+            {{ top_player["Player"] }}
+        </h2>
+
+        <p>
+            Highest calculated Performance Score
+            among the analyzed players.
+        </p>
+
+    </div>
+
+
+    <div class="score-box">
+
+        <div class="score">
+            {{ top_player["Performance_Score"] }}
+        </div>
+
+        <div class="score-label">
+            Performance Score / 100
+        </div>
+
+    </div>
+
+</div>
+```
+
+{% endif %}
+
+<!-- RANKING TABLE -->
+
+<div class="table-card">
+
+```
+<div class="table-header">
+
+    <h2>
+        📊 Player Rankings
+    </h2>
+
+    <span>
+        Ranked according to calculated performance score
+    </span>
+
+</div>
+
+
+<div class="table-wrapper">
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>Rank</th>
+                <th>Player</th>
+                <th>Performance Score</th>
+                <th>Points</th>
+                <th>Rebounds</th>
+                <th>Assists</th>
+                <th>Steals</th>
+                <th>Blocks</th>
+                <th>FG%</th>
+                <th>TS%</th>
+                <th>PER</th>
+                <th>Win Shares</th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+
+        {% for player in rankings %}
+
+            <tr>
+
+                <!-- RANK -->
+
+                <td class="rank">
+
+                    {% if player["Rank"] == 1 %}
+
+                        🥇
+
+                    {% elif player["Rank"] == 2 %}
+
+                        🥈
+
+                    {% elif player["Rank"] == 3 %}
+
+                        🥉
+
+                    {% else %}
+
+                        {{ player["Rank"] }}
+
+                    {% endif %}
+
+                </td>
+
+
+                <!-- PLAYER -->
+
+                <td>
+
+                    <div class="player-cell">
+
+                        <div class="player-avatar">
+                            🏀
+                        </div>
+
+                        <a
+                            href="{{ url_for('player_profile', player_name=player['Player']) }}"
+                            class="player-name"
+                        >
+                            {{ player["Player"] }}
+                        </a>
+
+                    </div>
+
+                </td>
+
+
+                <!-- PERFORMANCE SCORE -->
+
+                <td class="performance-cell">
+
+                    <span class="performance-score">
+                        {{ player["Performance_Score"] }}
+                    </span>
+
+                    <span class="score-label-small">
+                        / 100
+                    </span>
+
+                    <div class="score-bar">
+
+                        <div class="score-bar-fill"></div>
+
+                    </div>
+
+                </td>
+
+
+                <!-- POINTS -->
+
+                <td class="stat-value">
+                    {{ "%.1f"|format(player["Points"]) }}
+                </td>
+
+
+                <!-- REBOUNDS -->
+
+                <td class="stat-value">
+                    {{ "%.1f"|format(player["Rebounds"]) }}
+                </td>
+
+
+                <!-- ASSISTS -->
+
+                <td class="stat-value">
+                    {{ "%.1f"|format(player["Assists"]) }}
+                </td>
+
+
+                <!-- STEALS -->
+
+                <td class="stat-value">
+                    {{ "%.1f"|format(player["Steals"]) }}
+                </td>
+
+
+                <!-- BLOCKS -->
+
+                <td class="stat-value">
+                    {{ "%.1f"|format(player["Blocks"]) }}
+                </td>
+
+
+                <!-- FG% -->
+
+                <td class="percentage">
+                    {{ "%.1f"|format(player["FG_Percentage"]) }}%
+                </td>
+
+
+                <!-- TS% -->
+
+                <td class="percentage">
+                    {{ "%.1f"|format(player["TS_Percentage"]) }}%
+                </td>
+
+
+                <!-- PER -->
+
+                <td class="stat-value">
+                    {{ "%.1f"|format(player["PER"]) }}
+                </td>
+
+
+                <!-- WIN SHARES -->
+
+                <td class="stat-value">
+                    {{ "%.1f"|format(player["Win_Shares"]) }}
+                </td>
+
+            </tr>
+
+        {% endfor %}
+
+
+        </tbody>
+
+    </table>
+
+</div>
+```
+
+</div>
+
+<!-- SCORE EXPLANATION -->
+
+<div class="info-box">
+
+```
+<h3>
+    📊 How is the Performance Score calculated?
+</h3>
+
+<p>
+    Each statistical category is normalized to a
+    comparable 0–100 scale. The normalized values are
+    then combined using predefined weights to calculate
+    the final Performance Score.
+</p>
+
+
+<div class="weights">
+
+
+    <div class="weight">
+
+        <strong>Points</strong>
+
+        <div class="weight-value">
+            20%
+        </div>
+
+    </div>
+
+
+    <div class="weight">
+
+        <strong>Rebounds</strong>
+
+        <div class="weight-value">
+            10%
+        </div>
+
+    </div>
+
+
+    <div class="weight">
+
+        <strong>Assists</strong>
+
+        <div class="weight-value">
+            10%
+        </div>
+
+    </div>
+
+
+    <div class="weight">
+
+        <strong>Steals</strong>
+
+        <div class="weight-value">
+            5%
+        </div>
+
+    </div>
+
+
+    <div class="weight">
+
+        <strong>Blocks</strong>
+
+        <div class="weight-value">
+            5%
+        </div>
+
+    </div>
+
+
+    <div class="weight">
+
+        <strong>FG%</strong>
+
+        <div class="weight-value">
+            10%
+        </div>
+
+    </div>
+
+
+    <div class="weight">
+
+        <strong>TS%</strong>
+
+        <div class="weight-value">
+            10%
+        </div>
+
+    </div>
+
+
+    <div class="weight">
+
+        <strong>PER</strong>
+
+        <div class="weight-value">
+            15%
+        </div>
+
+    </div>
+
+
+    <div class="weight">
+
+        <strong>Win Shares</strong>
+
+        <div class="weight-value">
+            15%
+        </div>
+
+    </div>
+
+
+</div>
+```
+
+</div>
+
+</div>
+
+<!-- FOOTER -->
+
+<footer>
+
+```
+<strong>NBA Player Performance Analytics</strong>
+
+<br>
+
+Data-driven player evaluation and ranking system
+```
+
+</footer>
+
+</body>
+
+</html>
